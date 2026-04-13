@@ -1,0 +1,378 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+---
+<AdminLayout title="Quotes · Admin · Roastery Zen" active="quotes">
+  <header class="page-head">
+    <div class="head-left">
+      <div class="admin-eyebrow">
+        <span class="rule"></span>
+        <span class="label">Quotes</span>
+      </div>
+      <h1 class="title">문구 관리</h1>
+      <p class="meta">매일 누군가에게 도착하는 한 문장.</p>
+    </div>
+  </header>
+
+  <section class="admin-card composer" id="composer">
+    <div class="composer-head">
+      <span class="admin-cap">새 문구 추가</span>
+      <div class="mode-tabs" role="tablist">
+        <button type="button" class="mode-tab is-active" data-mode="single" role="tab">단일</button>
+        <button type="button" class="mode-tab" data-mode="bulk" role="tab">여러 개 붙여넣기</button>
+      </div>
+    </div>
+
+    <div data-pane="single">
+      <span class="composer-hint">엔터로 줄바꿈, 마침표 뒤는 페이지에서 자동 줄바꿈됩니다.</span>
+      <textarea
+        id="quoteContent"
+        class="textarea"
+        placeholder="예) 흐트러진 마음도, 결국 제자리를 찾는다."
+        rows="3"
+        style="margin-top:8px;"
+      ></textarea>
+
+      <div class="composer-row">
+        <label class="field-inline">
+          <span class="field-label">전용 음료 (선택)</span>
+          <select id="quoteOverride" class="select"></select>
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" id="quoteActive" checked />
+          <span>바로 공개</span>
+        </label>
+        <button id="quoteSubmit" class="btn btn-primary" type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg>
+          <span>추가하기</span>
+        </button>
+      </div>
+    </div>
+
+    <div data-pane="bulk" hidden>
+      <span class="composer-hint">한 줄에 하나씩 붙여넣으세요. 빈 줄은 무시됩니다. 최대 200개.</span>
+      <textarea
+        id="quoteBulk"
+        class="textarea"
+        placeholder={`흐트러진 마음도, 결국 제자리를 찾는다.\n서두르지 말자, 멈추지도 말자.\n오늘의 당신은 충분히 따뜻하다.`}
+        rows="8"
+        style="margin-top:8px;"
+      ></textarea>
+      <div class="composer-row">
+        <label class="checkbox">
+          <input type="checkbox" id="quoteBulkActive" checked />
+          <span>바로 공개</span>
+        </label>
+        <span id="quoteBulkCount" class="composer-hint" style="margin-left:auto; align-self:center;">0개</span>
+        <button id="quoteBulkSubmit" class="btn btn-primary" type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg>
+          <span>전부 추가</span>
+        </button>
+      </div>
+    </div>
+
+    <p class="composer-error" id="composerError"></p>
+  </section>
+
+  <section class="admin-card list" id="quoteList">
+    <div class="list-head">
+      <div>
+        <span class="admin-cap">전체 문구</span>
+        <h2 class="list-title">문장 라이브러리</h2>
+      </div>
+      <span class="list-count" id="listCount">—</span>
+    </div>
+    <div id="rows" class="rows">
+      <div class="row-empty">불러오는 중…</div>
+    </div>
+  </section>
+
+  <style>
+    .page-head { margin-bottom: 24px; }
+    .head-left { display: flex; flex-direction: column; gap: 8px; }
+    .title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 36px; line-height: 42px; color: #1a1612; letter-spacing: -0.02em; }
+    .meta { margin: 0; font-family: var(--font-ui-kr); font-size: 13px; color: #6b5842; }
+
+    .composer { padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
+    .composer-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .composer-hint { font-family: var(--font-ui-kr); font-size: 11px; color: #a68f6e; display: inline-block; }
+    .mode-tabs { display: inline-flex; gap: 2px; background: #f3ecdc; padding: 3px; border-radius: 999px; }
+    .mode-tab { border: 0; background: transparent; padding: 6px 12px; border-radius: 999px; font-family: var(--font-ui); font-size: 11px; font-weight: 600; color: #8a7454; cursor: pointer; }
+    .mode-tab.is-active { background: #ffffff; color: #1a1612; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+    .composer-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .field-inline { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 6px; }
+    .field-label { font-family: var(--font-ui); font-size: 10px; font-weight: 600; letter-spacing: 0.18em; color: #8a7454; text-transform: uppercase; }
+    .checkbox { display: flex; align-items: center; gap: 8px; font-family: var(--font-ui-kr); font-size: 13px; color: #1a1612; cursor: pointer; }
+    .checkbox input { width: 16px; height: 16px; accent-color: #1a1612; }
+    .composer-error { margin: 0; min-height: 18px; font-family: var(--font-ui-kr); font-size: 12px; color: #b54a3c; }
+
+    .list { padding: 0; }
+    .list-head { padding: 22px 24px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f3ecdc; }
+    .list-title { margin: 4px 0 0; font-family: var(--font-display); font-weight: 500; font-size: 20px; color: #1a1612; letter-spacing: -0.01em; }
+    .list-count { font-family: var(--font-ui); font-size: 12px; color: #8a7454; }
+
+    .rows { display: flex; flex-direction: column; }
+    .row-empty { padding: 22px 24px; font-family: var(--font-ui-kr); font-size: 13px; color: #a68f6e; }
+
+    .qrow { padding: 18px 24px; display: flex; align-items: flex-start; gap: 16px; border-bottom: 1px solid #f3ecdc; }
+    .qrow:last-child { border-bottom: 0; }
+    .qrow.is-editing { background: #fffaf0; }
+
+    .qrow-id { width: 36px; flex-shrink: 0; font-family: var(--font-display); font-style: italic; font-size: 16px; color: #c4b49a; padding-top: 2px; }
+    .qrow-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+    .qrow-body .qtext { margin: 0; font-family: var(--font-quote); font-weight: 500; font-size: 15px; line-height: 24px; color: #1a1612; word-break: keep-all; white-space: pre-line; }
+    .qrow-body .qmeta { font-family: var(--font-ui); font-size: 11px; color: #8a7454; }
+    .qrow-stat { width: 76px; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; padding-top: 2px; }
+    .qrow-stat .num { font-family: var(--font-ui); font-size: 13px; font-weight: 600; color: #1a1612; }
+    .qrow-stat .lbl { font-family: var(--font-ui); font-size: 10px; color: #a68f6e; letter-spacing: 0.06em; text-transform: uppercase; }
+    .qrow-actions { display: flex; flex-shrink: 0; align-items: center; gap: 4px; padding-top: 2px; }
+  </style>
+
+  <script>
+    type Drink = { id: number; name: string; note: string | null; is_active: boolean; usage_7d: number; usage_total: number };
+    type QuoteRow = {
+      id: number;
+      content: string;
+      is_active: boolean;
+      drink_override_id: number | null;
+      views_total: number;
+      likes_total: number;
+      views_7d: number;
+      likes_7d: number;
+    };
+
+    let drinksCache: Drink[] = [];
+    let quotesCache: QuoteRow[] = [];
+
+    function escapeHTML(s: string): string {
+      return s.replace(/[&<>"']/g, (c) => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>
+      )[c] || c);
+    }
+
+    async function fetchDrinks() {
+      const res = await fetch('/api/admin/drinks');
+      const data = await res.json() as { drinks?: Drink[] };
+      drinksCache = data.drinks || [];
+      const sel = document.getElementById('quoteOverride') as unknown as HTMLSelectElement;
+      sel.innerHTML = '<option value="">— 랜덤 풀에서 —</option>' +
+        drinksCache
+          .filter((d) => d.is_active)
+          .map((d) => `<option value="${d.id}">${escapeHTML(d.name)}</option>`)
+          .join('');
+    }
+
+    async function fetchQuotes() {
+      const res = await fetch('/api/admin/quotes');
+      const data = await res.json() as { quotes?: QuoteRow[] };
+      quotesCache = data.quotes || [];
+      render();
+    }
+
+    function render() {
+      const wrap = document.getElementById('rows')!;
+      const count = document.getElementById('listCount')!;
+      count.textContent = `${quotesCache.length}개`;
+
+      if (quotesCache.length === 0) {
+        wrap.innerHTML = '<div class="row-empty">아직 등록된 문구가 없어요. 위에서 추가해 보세요.</div>';
+        return;
+      }
+
+      wrap.innerHTML = quotesCache.map((q) => {
+        const drinkName = q.drink_override_id
+          ? drinksCache.find((d) => d.id === q.drink_override_id)?.name
+          : null;
+        const meta = drinkName
+          ? `전용 음료 · ${escapeHTML(drinkName)}`
+          : '랜덤 음료 풀 사용';
+        const status = q.is_active ? '공개' : '비공개';
+        return `
+          <div class="qrow" data-id="${q.id}">
+            <span class="qrow-id">#${q.id}</span>
+            <div class="qrow-body">
+              <p class="qtext">${escapeHTML(q.content)}</p>
+              <span class="qmeta">${meta} · ${status}</span>
+            </div>
+            <div class="qrow-stat">
+              <span class="num">${q.views_total.toLocaleString()}</span>
+              <span class="lbl">views</span>
+            </div>
+            <div class="qrow-stat">
+              <span class="num">${q.likes_total.toLocaleString()}</span>
+              <span class="lbl">likes</span>
+            </div>
+            <div class="qrow-actions">
+              <button class="toggle ${q.is_active ? 'is-on' : ''}" data-action="toggle"><span class="knob"></span></button>
+              <button class="btn btn-ghost" data-action="edit">편집</button>
+              <button class="btn btn-danger" data-action="delete">삭제</button>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    async function submitNew() {
+      const ta = document.getElementById('quoteContent') as HTMLTextAreaElement;
+      const sel = document.getElementById('quoteOverride') as unknown as HTMLSelectElement;
+      const active = (document.getElementById('quoteActive') as HTMLInputElement).checked;
+      const errEl = document.getElementById('composerError')!;
+      const btn = document.getElementById('quoteSubmit') as HTMLButtonElement;
+
+      errEl.textContent = '';
+      const content = ta.value.trim();
+      if (!content) { errEl.textContent = '문구를 입력해 주세요.'; return; }
+
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/admin/quotes', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            content,
+            drink_override_id: sel.value ? Number(sel.value) : null,
+            is_active: active,
+          }),
+        });
+        const data = await res.json() as { error?: string };
+        if (!res.ok) throw new Error(data?.error || '추가 실패');
+        ta.value = '';
+        sel.value = '';
+        await fetchQuotes();
+      } catch (err: any) {
+        errEl.textContent = err.message;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function patchQuote(id: number, patch: Record<string, unknown>) {
+      const res = await fetch(`/api/admin/quotes/${id}`, {
+        method: 'PATCH',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(patch),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({})) as { error?: string };
+        alert(data?.error || '수정 실패');
+        return false;
+      }
+      return true;
+    }
+
+    async function deleteQuote(id: number) {
+      const res = await fetch(`/api/admin/quotes/${id}`, { method: 'DELETE' });
+      return res.ok;
+    }
+
+    function startInlineEdit(row: HTMLElement, q: QuoteRow) {
+      row.classList.add('is-editing');
+      const body = row.querySelector('.qrow-body') as HTMLElement;
+      const drinkOpts = '<option value="">— 랜덤 풀에서 —</option>' +
+        drinksCache.filter((d) => d.is_active).map((d) =>
+          `<option value="${d.id}"${d.id === q.drink_override_id ? ' selected' : ''}>${escapeHTML(d.name)}</option>`
+        ).join('');
+      body.innerHTML = `
+        <textarea class="textarea" data-edit="content" rows="3">${escapeHTML(q.content)}</textarea>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <select class="select" data-edit="drink" style="max-width:240px;">${drinkOpts}</select>
+          <button class="btn btn-primary" data-action="save" style="margin-left:auto;">저장</button>
+          <button class="btn btn-ghost" data-action="cancel">취소</button>
+        </div>`;
+    }
+
+    function setMode(mode: 'single' | 'bulk') {
+      document.querySelectorAll<HTMLButtonElement>('.mode-tab').forEach((b) => {
+        b.classList.toggle('is-active', b.dataset.mode === mode);
+      });
+      document.querySelectorAll<HTMLElement>('[data-pane]').forEach((el) => {
+        el.hidden = el.dataset.pane !== mode;
+      });
+      (document.getElementById('composerError') as HTMLElement).textContent = '';
+    }
+
+    document.querySelectorAll<HTMLButtonElement>('.mode-tab').forEach((b) => {
+      b.addEventListener('click', () => setMode(b.dataset.mode as 'single' | 'bulk'));
+    });
+
+    const bulkArea = document.getElementById('quoteBulk') as HTMLTextAreaElement;
+    const bulkCount = document.getElementById('quoteBulkCount') as HTMLSpanElement;
+    bulkArea?.addEventListener('input', () => {
+      const n = bulkArea.value.split(/\r?\n/).map((s) => s.trim()).filter(Boolean).length;
+      bulkCount.textContent = `${n}개`;
+    });
+
+    async function submitBulk() {
+      const errEl = document.getElementById('composerError')!;
+      const btn = document.getElementById('quoteBulkSubmit') as HTMLButtonElement;
+      const active = (document.getElementById('quoteBulkActive') as HTMLInputElement).checked;
+      const items = bulkArea.value.split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
+
+      errEl.textContent = '';
+      if (items.length === 0) { errEl.textContent = '추가할 문구가 없어요.'; return; }
+
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/admin/quotes/bulk', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ items, is_active: active }),
+        });
+        const data = await res.json() as { error?: string; inserted?: number };
+        if (!res.ok) throw new Error(data?.error || '추가 실패');
+        bulkArea.value = '';
+        bulkCount.textContent = '0개';
+        await fetchQuotes();
+        errEl.style.color = '#4b7c52';
+        errEl.textContent = `${data.inserted}개 추가했어요.`;
+        setTimeout(() => { errEl.textContent = ''; errEl.style.color = ''; }, 2500);
+      } catch (err: any) {
+        errEl.style.color = '';
+        errEl.textContent = err.message;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    document.getElementById('quoteSubmit')?.addEventListener('click', submitNew);
+    document.getElementById('quoteBulkSubmit')?.addEventListener('click', submitBulk);
+
+    document.getElementById('rows')?.addEventListener('click', async (e) => {
+      const t = e.target as HTMLElement;
+      const action = t.closest('[data-action]')?.getAttribute('data-action');
+      const row = t.closest('.qrow') as HTMLElement | null;
+      if (!action || !row) return;
+      const id = Number(row.dataset.id);
+      const q = quotesCache.find((x) => x.id === id);
+      if (!q) return;
+
+      if (action === 'toggle') {
+        const ok = await patchQuote(id, { is_active: !q.is_active });
+        if (ok) await fetchQuotes();
+      } else if (action === 'edit') {
+        startInlineEdit(row, q);
+      } else if (action === 'cancel') {
+        await fetchQuotes();
+      } else if (action === 'save') {
+        const content = (row.querySelector('[data-edit="content"]') as HTMLTextAreaElement).value.trim();
+        const drinkVal = (row.querySelector('[data-edit="drink"]') as unknown as HTMLSelectElement).value;
+        if (!content) { alert('문구가 비어있어요.'); return; }
+        const ok = await patchQuote(id, {
+          content,
+          drink_override_id: drinkVal ? Number(drinkVal) : null,
+        });
+        if (ok) await fetchQuotes();
+      } else if (action === 'delete') {
+        if (!confirm(`#${id} 문구를 삭제할까요? 좋아요/조회 이력도 함께 사라져요.`)) return;
+        const ok = await deleteQuote(id);
+        if (ok) await fetchQuotes();
+      }
+    });
+
+    (async () => {
+      await fetchDrinks();
+      await fetchQuotes();
+      if (location.hash === '#new') {
+        (document.getElementById('quoteContent') as HTMLTextAreaElement).focus();
+      }
+    })();
+  </script>
+</AdminLayout>

@@ -1,0 +1,209 @@
+---
+import Base from '@/layouts/Base.astro';
+
+const next = Astro.url.searchParams.get('next') || '/admin';
+---
+<Base title="Admin Login | ROASTERY ZEN">
+  <main class="login">
+    <div class="login-card">
+      <div class="login-brand">
+        <img src="/roasteryzen_logo.png" alt="ROASTERY ZEN" />
+        <div>
+          <span class="login-cap">ROASTERY ZEN</span>
+          <span class="login-sub">admin console</span>
+        </div>
+      </div>
+
+      <h1 class="login-title">관리자 로그인</h1>
+      <p class="login-text">콘솔에 들어가려면 비밀번호를 입력해 주세요.</p>
+
+      <form id="loginForm" autocomplete="off" novalidate>
+        <input type="hidden" name="next" value={next} />
+        <label class="field">
+          <span class="field-label">Password</span>
+          <input
+            type="password"
+            name="password"
+            required
+            autofocus
+            placeholder="••••••••"
+          />
+        </label>
+
+        <p class="login-error" id="loginError" role="alert" aria-live="polite"></p>
+
+        <button type="submit" class="login-btn">
+          <span>들어가기</span>
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <style>
+    .login {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: #f4ead9;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 380px;
+      padding: 36px 32px 32px;
+      background: #fffaf2;
+      border: 1px solid #e8dcc6;
+      border-radius: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .login-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .login-brand img {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #1a1612;
+    }
+
+    .login-brand div {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .login-cap {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: #1a1612;
+      text-transform: uppercase;
+    }
+
+    .login-sub {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 12px;
+      color: #8a7454;
+    }
+
+    .login-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 24px;
+      color: #1a1612;
+      letter-spacing: -0.01em;
+    }
+
+    .login-text {
+      margin: 0 0 8px;
+      font-family: var(--font-ui-kr);
+      font-size: 13px;
+      color: #6b5842;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-label {
+      font-family: var(--font-ui);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      color: #8a7454;
+      text-transform: uppercase;
+    }
+
+    .field input {
+      padding: 13px 14px;
+      border-radius: 10px;
+      border: 1px solid #e4dcc8;
+      background: #ffffff;
+      font-family: var(--font-ui);
+      font-size: 14px;
+      color: #1a1612;
+      outline: none;
+      transition: border-color 0.12s ease;
+    }
+
+    .field input:focus {
+      border-color: #1a1612;
+    }
+
+    .login-error {
+      margin: 6px 0 0;
+      min-height: 18px;
+      font-family: var(--font-ui-kr);
+      font-size: 12px;
+      color: #b54a3c;
+    }
+
+    .login-btn {
+      margin-top: 6px;
+      padding: 14px 18px;
+      border: 0;
+      border-radius: 999px;
+      background: #1a1612;
+      color: #f4ead9;
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+    }
+
+    .login-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  </style>
+
+  <script>
+    const form = document.getElementById('loginForm') as HTMLFormElement;
+    const errorEl = document.getElementById('loginError') as HTMLParagraphElement;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorEl.textContent = '';
+      const fd = new FormData(form);
+      const password = String(fd.get('password') || '');
+      const next = String(fd.get('next') || '/admin');
+
+      const btn = form.querySelector('button') as HTMLButtonElement;
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ password }),
+        });
+        const data = await res.json().catch(() => ({})) as { error?: string };
+        if (!res.ok) {
+          errorEl.textContent = data?.error || '로그인에 실패했어요.';
+          btn.disabled = false;
+          return;
+        }
+        window.location.href = next;
+      } catch (err) {
+        console.error(err);
+        errorEl.textContent = '네트워크 오류가 발생했어요.';
+        btn.disabled = false;
+      }
+    });
+  </script>
+</Base>

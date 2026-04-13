@@ -1,0 +1,320 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+---
+<AdminLayout title="Drinks · Admin · Roastery Zen" active="drinks">
+  <header class="page-head">
+    <div class="head-left">
+      <div class="admin-eyebrow">
+        <span class="rule"></span>
+        <span class="label">Drinks</span>
+      </div>
+      <h1 class="title">음료 관리</h1>
+      <p class="meta">랜덤 페어링에 사용될 음료 목록.</p>
+    </div>
+  </header>
+
+  <section class="admin-card composer">
+    <div class="composer-head">
+      <span class="admin-cap">새 음료 추가</span>
+      <div class="mode-tabs" role="tablist">
+        <button type="button" class="mode-tab is-active" data-mode="single" role="tab">단일</button>
+        <button type="button" class="mode-tab" data-mode="bulk" role="tab">여러 개 붙여넣기</button>
+      </div>
+    </div>
+
+    <div data-pane="single">
+      <div class="composer-row">
+        <label class="field-inline" style="flex:1;">
+          <span class="field-label">이름</span>
+          <input id="drinkName" class="input" placeholder="예) Ethiopia Yirgacheffe" />
+        </label>
+        <label class="field-inline" style="flex:1.5;">
+          <span class="field-label">한 줄 설명 (선택)</span>
+          <input id="drinkNote" class="input" placeholder="예) 핸드드립 · 꽃향, 감귤" />
+        </label>
+        <label class="checkbox" style="margin-top:18px;">
+          <input type="checkbox" id="drinkActive" checked />
+          <span>활성</span>
+        </label>
+        <button id="drinkSubmit" class="btn btn-primary" style="margin-top:18px;" type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg>
+          <span>추가하기</span>
+        </button>
+      </div>
+    </div>
+
+    <div data-pane="bulk" hidden>
+      <span class="composer-hint">한 줄에 하나씩. 설명이 있으면 <code>이름 | 설명</code> 형식. 최대 200개.</span>
+      <textarea
+        id="drinkBulk"
+        class="textarea"
+        placeholder={`Ethiopia Yirgacheffe | 핸드드립 · 꽃향, 감귤\nVanilla Latte | 따뜻한 우유 베이스\nCold Brew\nSencha Tea | 논카페인 · 찻잎차`}
+        rows="8"
+        style="margin-top:8px;"
+      ></textarea>
+      <div class="composer-row">
+        <label class="checkbox">
+          <input type="checkbox" id="drinkBulkActive" checked />
+          <span>활성</span>
+        </label>
+        <span id="drinkBulkCount" class="composer-hint" style="margin-left:auto; align-self:center;">0개</span>
+        <button id="drinkBulkSubmit" class="btn btn-primary" type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg>
+          <span>전부 추가</span>
+        </button>
+      </div>
+    </div>
+
+    <p class="composer-error" id="composerError"></p>
+  </section>
+
+  <section class="admin-card list">
+    <div class="list-head">
+      <div>
+        <span class="admin-cap">전체 음료</span>
+        <h2 class="list-title">Drink Pool</h2>
+      </div>
+      <span class="list-count" id="listCount">—</span>
+    </div>
+    <div id="rows" class="rows">
+      <div class="row-empty">불러오는 중…</div>
+    </div>
+  </section>
+
+  <style>
+    .page-head { margin-bottom: 24px; }
+    .head-left { display: flex; flex-direction: column; gap: 8px; }
+    .title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 36px; line-height: 42px; color: #1a1612; letter-spacing: -0.02em; }
+    .meta { margin: 0; font-family: var(--font-ui-kr); font-size: 13px; color: #6b5842; }
+
+    .composer { padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
+    .composer-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .composer-hint { font-family: var(--font-ui-kr); font-size: 11px; color: #a68f6e; display: inline-block; }
+    .composer-hint code { font-family: var(--font-ui); background: #f3ecdc; padding: 1px 6px; border-radius: 4px; color: #1a1612; }
+    .mode-tabs { display: inline-flex; gap: 2px; background: #f3ecdc; padding: 3px; border-radius: 999px; }
+    .mode-tab { border: 0; background: transparent; padding: 6px 12px; border-radius: 999px; font-family: var(--font-ui); font-size: 11px; font-weight: 600; color: #8a7454; cursor: pointer; }
+    .mode-tab.is-active { background: #ffffff; color: #1a1612; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+    .composer-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+    .field-inline { min-width: 160px; display: flex; flex-direction: column; gap: 6px; }
+    .field-label { font-family: var(--font-ui); font-size: 10px; font-weight: 600; letter-spacing: 0.18em; color: #8a7454; text-transform: uppercase; }
+    .checkbox { display: flex; align-items: center; gap: 8px; font-family: var(--font-ui-kr); font-size: 13px; color: #1a1612; cursor: pointer; }
+    .checkbox input { width: 16px; height: 16px; accent-color: #1a1612; }
+    .composer-error { margin: 0; min-height: 18px; font-family: var(--font-ui-kr); font-size: 12px; color: #b54a3c; }
+
+    .list { padding: 0; }
+    .list-head { padding: 22px 24px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f3ecdc; }
+    .list-title { margin: 4px 0 0; font-family: var(--font-display); font-weight: 500; font-size: 20px; color: #1a1612; letter-spacing: -0.01em; }
+    .list-count { font-family: var(--font-ui); font-size: 12px; color: #8a7454; }
+    .rows { display: flex; flex-direction: column; }
+    .row-empty { padding: 22px 24px; font-family: var(--font-ui-kr); font-size: 13px; color: #a68f6e; }
+
+    .drow { padding: 14px 24px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid #f3ecdc; }
+    .drow:last-child { border-bottom: 0; }
+    .drow.is-editing { background: #fffaf0; }
+
+    .drow-icon { width: 36px; height: 36px; border-radius: 10px; background: #f6ede0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #8a7454; }
+    .drow-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .drow-name { font-family: var(--font-ui); font-size: 14px; font-weight: 600; color: #1a1612; }
+    .drow-note { font-family: var(--font-ui-kr); font-size: 12px; color: #8a7454; }
+    .drow-stat { width: 84px; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; }
+    .drow-stat .num { font-family: var(--font-ui); font-size: 13px; font-weight: 600; color: #1a1612; }
+    .drow-stat .lbl { font-family: var(--font-ui); font-size: 10px; color: #a68f6e; letter-spacing: 0.06em; text-transform: uppercase; }
+    .drow-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+  </style>
+
+  <script>
+    type Drink = {
+      id: number; name: string; note: string | null; is_active: boolean;
+      usage_total: number; usage_7d: number;
+    };
+
+    let cache: Drink[] = [];
+
+    function escapeHTML(s: string): string {
+      return s.replace(/[&<>"']/g, (c) => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>
+      )[c] || c);
+    }
+
+    const COFFEE_ICON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h14v4a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5v-4Z"/><path d="M17 11h2a2 2 0 0 1 0 4h-2"/></svg>';
+
+    async function fetchAll() {
+      const res = await fetch('/api/admin/drinks');
+      const data = await res.json() as { drinks?: Drink[] };
+      cache = data.drinks || [];
+      render();
+    }
+
+    function render() {
+      const wrap = document.getElementById('rows')!;
+      const count = document.getElementById('listCount')!;
+      count.textContent = `${cache.length}개`;
+
+      if (cache.length === 0) {
+        wrap.innerHTML = '<div class="row-empty">아직 등록된 음료가 없어요.</div>';
+        return;
+      }
+
+      wrap.innerHTML = cache.map((d) => `
+        <div class="drow" data-id="${d.id}">
+          <div class="drow-icon">${COFFEE_ICON}</div>
+          <div class="drow-body">
+            <span class="drow-name">${escapeHTML(d.name)}</span>
+            <span class="drow-note">${escapeHTML(d.note || (d.is_active ? '활성' : '비활성'))}</span>
+          </div>
+          <div class="drow-stat"><span class="num">${d.usage_7d}</span><span class="lbl">7d</span></div>
+          <div class="drow-stat"><span class="num">${d.usage_total}</span><span class="lbl">total</span></div>
+          <div class="drow-actions">
+            <button class="toggle ${d.is_active ? 'is-on' : ''}" data-action="toggle"><span class="knob"></span></button>
+            <button class="btn btn-ghost" data-action="edit">편집</button>
+            <button class="btn btn-danger" data-action="delete">삭제</button>
+          </div>
+        </div>`).join('');
+    }
+
+    async function submitNew() {
+      const nameEl = document.getElementById('drinkName') as HTMLInputElement;
+      const noteEl = document.getElementById('drinkNote') as HTMLInputElement;
+      const active = (document.getElementById('drinkActive') as HTMLInputElement).checked;
+      const errEl = document.getElementById('composerError')!;
+      const btn = document.getElementById('drinkSubmit') as HTMLButtonElement;
+
+      errEl.textContent = '';
+      const name = nameEl.value.trim();
+      if (!name) { errEl.textContent = '음료 이름을 입력해 주세요.'; return; }
+
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/admin/drinks', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ name, note: noteEl.value.trim() || null, is_active: active }),
+        });
+        const data = await res.json() as { error?: string };
+        if (!res.ok) throw new Error(data?.error || '추가 실패');
+        nameEl.value = '';
+        noteEl.value = '';
+        await fetchAll();
+      } catch (err: any) {
+        errEl.textContent = err.message;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function patchDrink(id: number, patch: Record<string, unknown>) {
+      const res = await fetch(`/api/admin/drinks/${id}`, {
+        method: 'PATCH',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(patch),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({})) as { error?: string };
+        alert(data?.error || '수정 실패');
+        return false;
+      }
+      return true;
+    }
+
+    function startEdit(row: HTMLElement, d: Drink) {
+      row.classList.add('is-editing');
+      const body = row.querySelector('.drow-body') as HTMLElement;
+      body.innerHTML = `
+        <input class="input" data-edit="name" value="${escapeHTML(d.name)}" placeholder="이름" />
+        <input class="input" data-edit="note" value="${escapeHTML(d.note || '')}" placeholder="설명 (선택)" style="margin-top:6px;" />
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <button class="btn btn-primary" data-action="save">저장</button>
+          <button class="btn btn-ghost" data-action="cancel">취소</button>
+        </div>`;
+    }
+
+    function setMode(mode: 'single' | 'bulk') {
+      document.querySelectorAll<HTMLButtonElement>('.mode-tab').forEach((b) => {
+        b.classList.toggle('is-active', b.dataset.mode === mode);
+      });
+      document.querySelectorAll<HTMLElement>('[data-pane]').forEach((el) => {
+        el.hidden = el.dataset.pane !== mode;
+      });
+      const errEl = document.getElementById('composerError');
+      if (errEl) { errEl.textContent = ''; errEl.style.color = ''; }
+    }
+
+    document.querySelectorAll<HTMLButtonElement>('.mode-tab').forEach((b) => {
+      b.addEventListener('click', () => setMode(b.dataset.mode as 'single' | 'bulk'));
+    });
+
+    const bulkArea = document.getElementById('drinkBulk') as HTMLTextAreaElement;
+    const bulkCount = document.getElementById('drinkBulkCount') as HTMLSpanElement;
+    bulkArea?.addEventListener('input', () => {
+      const n = bulkArea.value.split(/\r?\n/).map((s) => s.trim()).filter(Boolean).length;
+      bulkCount.textContent = `${n}개`;
+    });
+
+    async function submitBulk() {
+      const errEl = document.getElementById('composerError')!;
+      const btn = document.getElementById('drinkBulkSubmit') as HTMLButtonElement;
+      const active = (document.getElementById('drinkBulkActive') as HTMLInputElement).checked;
+      const items = bulkArea.value.split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
+
+      errEl.textContent = '';
+      errEl.style.color = '';
+      if (items.length === 0) { errEl.textContent = '추가할 음료가 없어요.'; return; }
+
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/admin/drinks/bulk', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ items, is_active: active }),
+        });
+        const data = await res.json() as { error?: string; inserted?: number };
+        if (!res.ok) throw new Error(data?.error || '추가 실패');
+        bulkArea.value = '';
+        bulkCount.textContent = '0개';
+        await fetchAll();
+        errEl.style.color = '#4b7c52';
+        errEl.textContent = `${data.inserted}개 추가했어요.`;
+        setTimeout(() => { errEl.textContent = ''; errEl.style.color = ''; }, 2500);
+      } catch (err: any) {
+        errEl.style.color = '';
+        errEl.textContent = err.message;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    document.getElementById('drinkSubmit')?.addEventListener('click', submitNew);
+    document.getElementById('drinkBulkSubmit')?.addEventListener('click', submitBulk);
+
+    document.getElementById('rows')?.addEventListener('click', async (e) => {
+      const t = e.target as HTMLElement;
+      const action = t.closest('[data-action]')?.getAttribute('data-action');
+      const row = t.closest('.drow') as HTMLElement | null;
+      if (!action || !row) return;
+      const id = Number(row.dataset.id);
+      const d = cache.find((x) => x.id === id);
+      if (!d) return;
+
+      if (action === 'toggle') {
+        const ok = await patchDrink(id, { is_active: !d.is_active });
+        if (ok) await fetchAll();
+      } else if (action === 'edit') {
+        startEdit(row, d);
+      } else if (action === 'cancel') {
+        await fetchAll();
+      } else if (action === 'save') {
+        const name = (row.querySelector('[data-edit="name"]') as HTMLInputElement).value.trim();
+        const note = (row.querySelector('[data-edit="note"]') as HTMLInputElement).value.trim();
+        if (!name) { alert('이름이 비어있어요.'); return; }
+        const ok = await patchDrink(id, { name, note: note || null });
+        if (ok) await fetchAll();
+      } else if (action === 'delete') {
+        if (!confirm(`${d.name} 음료를 삭제할까요?`)) return;
+        const res = await fetch(`/api/admin/drinks/${id}`, { method: 'DELETE' });
+        if (res.ok) await fetchAll();
+      }
+    });
+
+    fetchAll();
+  </script>
+</AdminLayout>

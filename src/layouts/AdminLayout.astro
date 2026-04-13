@@ -1,0 +1,395 @@
+---
+import Base from '@/layouts/Base.astro';
+
+interface Props {
+  title: string;
+  active: 'overview' | 'quotes' | 'drinks';
+}
+
+const { title, active } = Astro.props;
+
+const navItems: { key: Props['active']; href: string; label: string; icon: string }[] = [
+  {
+    key: 'overview',
+    href: '/admin',
+    label: 'Overview',
+    icon: 'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z',
+  },
+  {
+    key: 'quotes',
+    href: '/admin/quotes',
+    label: 'Quotes',
+    icon: 'M3 7h18M3 12h18M3 17h12',
+  },
+  {
+    key: 'drinks',
+    href: '/admin/drinks',
+    label: 'Drinks',
+    icon: 'M3 10h14v4a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5v-4ZM17 11h2a2 2 0 0 1 0 4h-2',
+  },
+];
+---
+<Base title={title} bodyClass="admin-body">
+  <div class="admin-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="/roasteryzen_logo.png" alt="ROASTERY ZEN" />
+        <div>
+          <span class="brand-cap">ROASTERY ZEN</span>
+          <span class="brand-sub">admin console</span>
+        </div>
+      </div>
+
+      <div class="section-cap">Workspace</div>
+
+      <nav class="nav">
+        {navItems.map((item) => (
+          <a href={item.href} class={`nav-item${active === item.key ? ' is-active' : ''}`}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d={item.icon} />
+            </svg>
+            <span>{item.label}</span>
+          </a>
+        ))}
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div>
+          <span class="bottom-name">Admin</span>
+          <span class="bottom-sub">signed in</span>
+        </div>
+        <button id="logoutBtn" type="button" aria-label="Sign out">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <path d="m16 17 5-5-5-5" />
+            <path d="M21 12H9" />
+          </svg>
+        </button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <slot />
+    </main>
+  </div>
+
+  <style is:global>
+    body.admin-body {
+      background: #faf8f4;
+    }
+
+    .admin-cap {
+      font-family: var(--font-ui);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      color: #8a7454;
+      text-transform: uppercase;
+    }
+
+    .admin-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .admin-eyebrow .rule {
+      width: 20px;
+      height: 1px;
+      background: #1a1612;
+    }
+
+    .admin-eyebrow .label {
+      font-family: var(--font-ui);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      color: #1a1612;
+      text-transform: uppercase;
+    }
+
+    .admin-card {
+      background: #ffffff;
+      border: 1px solid #eee4d0;
+      border-radius: 16px;
+    }
+
+    .admin-card.is-dark {
+      background: #1a1612;
+      color: #f4ead9;
+      border: 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 16px;
+      border-radius: 999px;
+      border: 0;
+      cursor: pointer;
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background: #1a1612;
+      color: #f4ead9;
+    }
+
+    .btn-secondary {
+      background: #f3ecdc;
+      color: #1a1612;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #6b5842;
+      padding: 8px 12px;
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: #b54a3c;
+      padding: 8px 12px;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .input,
+    .textarea,
+    .select {
+      width: 100%;
+      padding: 11px 13px;
+      border-radius: 10px;
+      border: 1px solid #e4dcc8;
+      background: #fffdf8;
+      font-family: var(--font-ui);
+      font-size: 13px;
+      color: #1a1612;
+      outline: none;
+    }
+
+    .textarea {
+      font-family: var(--font-ui-kr);
+      line-height: 22px;
+      min-height: 86px;
+      resize: vertical;
+    }
+
+    .input:focus,
+    .textarea:focus,
+    .select:focus {
+      border-color: #1a1612;
+    }
+
+    .toggle {
+      width: 40px;
+      height: 22px;
+      border-radius: 999px;
+      background: #e4dcc8;
+      padding: 3px;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      border: 0;
+    }
+
+    .toggle .knob {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: #a68f6e;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .toggle.is-on {
+      background: #1a1612;
+    }
+
+    .toggle.is-on .knob {
+      transform: translateX(18px);
+      background: #f4ead9;
+    }
+  </style>
+
+  <style>
+    .admin-shell {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background: #1a1612;
+      color: #f4ead9;
+      display: flex;
+      flex-direction: column;
+      padding: 28px 20px;
+      gap: 28px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 6px;
+    }
+
+    .brand img {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+    }
+
+    .brand div {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-cap {
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: #f4ead9;
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 12px;
+      color: #8a7454;
+    }
+
+    .section-cap {
+      padding: 0 12px;
+      font-family: var(--font-ui);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      color: #6b5842;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #b8a688;
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .nav-item:hover {
+      color: #f4ead9;
+    }
+
+    .nav-item.is-active {
+      background: #2a221a;
+      color: #f4ead9;
+      font-weight: 600;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 14px 12px;
+      border-top: 1px solid #2a221a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-bottom > div {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .bottom-name {
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 600;
+      color: #f4ead9;
+    }
+
+    .bottom-sub {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      color: #6b5842;
+    }
+
+    .sidebar-bottom button {
+      background: transparent;
+      border: 0;
+      color: #8a7454;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 8px;
+    }
+
+    .sidebar-bottom button:hover {
+      color: #f4ead9;
+    }
+
+    .admin-main {
+      flex: 1;
+      min-width: 0;
+      padding: 32px 48px 64px;
+    }
+
+    @media (max-width: 900px) {
+      .admin-shell {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        gap: 20px;
+      }
+      .section-cap, .sidebar-bottom > div, .nav-item span {
+        display: none;
+      }
+      .nav {
+        flex-direction: row;
+        gap: 4px;
+      }
+      .sidebar-bottom {
+        margin-top: 0;
+        border-top: 0;
+        padding: 0;
+      }
+      .admin-main {
+        padding: 24px 20px 60px;
+      }
+    }
+  </style>
+
+  <script>
+    const btn = document.getElementById('logoutBtn');
+    btn?.addEventListener('click', async () => {
+      await fetch('/api/admin/logout', { method: 'POST' });
+      window.location.href = '/admin/login';
+    });
+  </script>
+</Base>

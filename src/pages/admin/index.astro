@@ -1,0 +1,673 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+
+const today = new Date();
+const dateLabel = new Intl.DateTimeFormat('ko-KR', {
+  timeZone: 'Asia/Seoul',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  weekday: 'long',
+}).format(today);
+const hour = Number(
+  new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Seoul', hour: '2-digit', hour12: false }).format(today)
+);
+const greeting = hour < 5 ? 'Good night' : hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+---
+<AdminLayout title="Overview · Admin · Roastery Zen" active="overview">
+  <header class="page-head">
+    <div class="head-left">
+      <div class="admin-eyebrow">
+        <span class="rule"></span>
+        <span class="label">Overview</span>
+      </div>
+      <h1 class="title">{greeting}, <em>Zen.</em></h1>
+      <p class="meta">{dateLabel}의 풍경</p>
+    </div>
+    <div class="head-actions">
+      <a class="btn btn-secondary" href="/admin/quotes">문구 관리 →</a>
+      <a class="btn btn-primary" href="/admin/quotes#new">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5v14"></path>
+        </svg>
+        <span>새 글귀</span>
+      </a>
+    </div>
+  </header>
+
+  <section class="stats" id="statsRow" aria-busy="true">
+    <article class="stat admin-card">
+      <div class="stat-head">
+        <span class="admin-cap">Views · 7d</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c4b49a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+      </div>
+      <div class="stat-value" data-key="views_week">—</div>
+      <span class="stat-sub" data-key="views_today_text">오늘 — 명이 문장을 만났어요</span>
+    </article>
+
+    <article class="stat admin-card">
+      <div class="stat-head">
+        <span class="admin-cap">Likes · 7d</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c4b49a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8Z" /></svg>
+      </div>
+      <div class="stat-value" data-key="likes_week">—</div>
+      <span class="stat-sub" data-key="likes_today_text">오늘 좋아요 —</span>
+    </article>
+
+    <article class="stat admin-card">
+      <div class="stat-head">
+        <span class="admin-cap">Quotes active</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c4b49a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12" /></svg>
+      </div>
+      <div class="stat-value">
+        <span data-key="quotes_active">—</span>
+        <span class="stat-sub-inline">/ <span data-key="quotes_total">—</span></span>
+      </div>
+      <span class="stat-sub" data-key="quotes_inactive_text">비공개 — 개</span>
+    </article>
+
+    <article class="stat admin-card is-dark">
+      <div class="stat-head">
+        <span class="admin-cap" style="color:#8a7454">Drink pool</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a7454" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h14v4a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5v-4Z" /><path d="M17 11h2a2 2 0 0 1 0 4h-2" /></svg>
+      </div>
+      <div class="stat-value">
+        <span data-key="drinks_active" style="font-style:italic">—</span>
+        <span class="stat-sub-inline">음료</span>
+      </div>
+      <span class="stat-sub">관리는 Drinks 탭에서</span>
+    </article>
+  </section>
+
+  <section class="grid">
+    <article class="admin-card top-quotes">
+      <div class="card-head">
+        <div>
+          <span class="admin-cap">Top Quotes</span>
+          <h2 class="card-title">이번 주 가장 사랑받은 문장</h2>
+        </div>
+        <a href="/admin/quotes" class="card-link">모두 보기 →</a>
+      </div>
+      <div id="topQuotes" class="rows">
+        <div class="row-empty">불러오는 중…</div>
+      </div>
+    </article>
+
+    <article class="admin-card today-card is-dark">
+      <div class="today-head">
+        <div class="admin-eyebrow">
+          <span class="rule" style="background:#8a7454"></span>
+          <span class="label" style="color:#b8a688">Today</span>
+        </div>
+        <span class="today-time" id="todayTime">KST</span>
+      </div>
+      <p class="today-headline" id="todayHeadline">오늘의 풍경을 가져오는 중…</p>
+      <div class="today-grid">
+        <div>
+          <div class="today-num" data-key="views_today">—</div>
+          <div class="today-label">Views</div>
+        </div>
+        <div>
+          <div class="today-num" data-key="likes_today">—</div>
+          <div class="today-label">Likes</div>
+        </div>
+        <div>
+          <div class="today-num" data-key="quotes_active_today">—</div>
+          <div class="today-label">Active</div>
+        </div>
+      </div>
+    </article>
+
+    <article class="admin-card drink-pool">
+      <div class="card-head">
+        <div>
+          <span class="admin-cap">Drink Pool</span>
+          <h2 class="card-title">랜덤 추천 목록</h2>
+        </div>
+        <a href="/admin/drinks" class="btn btn-secondary" style="padding:8px 12px;font-size:11px;">관리 →</a>
+      </div>
+      <div id="drinkPool" class="drinks">
+        <div class="row-empty">불러오는 중…</div>
+      </div>
+    </article>
+  </section>
+
+  <style>
+    .page-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .head-left {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 42px;
+      line-height: 46px;
+      color: #1a1612;
+      letter-spacing: -0.02em;
+    }
+
+    .title em {
+      font-style: italic;
+      color: #8a7454;
+    }
+
+    .meta {
+      margin: 0;
+      font-family: var(--font-ui-kr);
+      font-size: 13px;
+      color: #6b5842;
+    }
+
+    .head-actions {
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat {
+      padding: 22px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .stat-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .stat-value {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 40px;
+      line-height: 40px;
+      color: #1a1612;
+      letter-spacing: -0.02em;
+    }
+
+    .stat.is-dark .stat-value {
+      color: #f4ead9;
+    }
+
+    .stat-sub {
+      font-family: var(--font-ui-kr);
+      font-size: 12px;
+      color: #8a7454;
+    }
+
+    .stat.is-dark .stat-sub {
+      color: #b8a688;
+    }
+
+    .stat-sub-inline {
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 600;
+      color: #8a7454;
+    }
+
+    .stat.is-dark .stat-sub-inline {
+      color: #b8a688;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 24px;
+    }
+
+    .top-quotes {
+      grid-row: span 2;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-head {
+      padding: 22px 24px 14px;
+      border-bottom: 1px solid #f3ecdc;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-head h2 {
+      margin: 4px 0 0;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 20px;
+      color: #1a1612;
+      letter-spacing: -0.01em;
+    }
+
+    .card-link {
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 500;
+      color: #8a7454;
+      text-decoration: none;
+    }
+
+    .rows {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .row-empty {
+      padding: 22px 24px;
+      font-family: var(--font-ui-kr);
+      font-size: 13px;
+      color: #a68f6e;
+    }
+
+    .quote-row {
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid #f3ecdc;
+    }
+
+    .quote-row:last-child {
+      border-bottom: 0;
+    }
+
+    .quote-rank {
+      width: 28px;
+      flex-shrink: 0;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 20px;
+      color: #c4b49a;
+    }
+
+    .quote-body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .quote-body p {
+      margin: 0;
+      font-family: var(--font-quote);
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 22px;
+      color: #1a1612;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .quote-body span {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      color: #8a7454;
+    }
+
+    .quote-stat {
+      width: 64px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    .quote-stat .num {
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 600;
+      color: #1a1612;
+    }
+
+    .quote-stat .lbl {
+      font-family: var(--font-ui);
+      font-size: 10px;
+      color: #a68f6e;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .quote-bar {
+      width: 96px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .quote-bar .track {
+      flex: 1;
+      height: 4px;
+      background: #f3ecdc;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .quote-bar .fill {
+      height: 100%;
+      background: #1a1612;
+      border-radius: 999px;
+    }
+
+    .quote-bar .pct {
+      width: 36px;
+      flex-shrink: 0;
+      text-align: right;
+      font-family: var(--font-ui);
+      font-size: 10px;
+      font-weight: 600;
+      color: #8a7454;
+    }
+
+    .today-card {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .today-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .today-time {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      color: #8a7454;
+    }
+
+    .today-headline {
+      margin: 0;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 22px;
+      line-height: 30px;
+      color: #f4ead9;
+      letter-spacing: -0.01em;
+      word-break: keep-all;
+    }
+
+    .today-grid {
+      display: flex;
+      gap: 14px;
+      padding-top: 6px;
+      border-top: 1px solid #2a221a;
+    }
+
+    .today-grid > div {
+      flex: 1;
+      padding-left: 14px;
+      border-left: 1px solid #2a221a;
+    }
+
+    .today-grid > div:first-child {
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    .today-num {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 24px;
+      color: #f4ead9;
+    }
+
+    .today-label {
+      font-family: var(--font-ui);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: #8a7454;
+      text-transform: uppercase;
+    }
+
+    .drink-pool {
+      padding: 22px 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .drink-pool .card-head {
+      padding: 0 0 6px;
+      border-bottom: 0;
+    }
+
+    .drinks {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .drink-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f3ecdc;
+    }
+
+    .drink-row:last-child {
+      border-bottom: 0;
+    }
+
+    .drink-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #f6ede0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #8a7454;
+    }
+
+    .drink-body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .drink-name {
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 600;
+      color: #1a1612;
+    }
+
+    .drink-note {
+      font-family: var(--font-ui-kr);
+      font-size: 11px;
+      color: #8a7454;
+    }
+
+    .drink-count {
+      width: 48px;
+      flex-shrink: 0;
+      text-align: right;
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 500;
+      color: #8a7454;
+    }
+
+    .drink-status {
+      width: 6px;
+      height: 6px;
+      flex-shrink: 0;
+      border-radius: 999px;
+      background: #1a1612;
+    }
+
+    .drink-status.is-off {
+      background: #d4c5a8;
+    }
+
+    @media (max-width: 1100px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .grid { grid-template-columns: 1fr; }
+      .top-quotes { grid-row: auto; }
+    }
+  </style>
+
+  <script>
+    type Stats = {
+      today: string;
+      views: { today: number; week: number };
+      likes: { today: number; week: number };
+      quotes: { active: number; total: number };
+      drinks: { active: number };
+      topQuotes: Array<{
+        id: number;
+        content: string;
+        views_total: number;
+        views_7d: number;
+        likes_total: number;
+        likes_7d: number;
+      }>;
+      drinkPool: Array<{
+        id: number;
+        name: string;
+        note: string | null;
+        is_active: boolean;
+        usage_total: number;
+        usage_7d: number;
+      }>;
+    };
+
+    const COFFEE_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h14v4a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5v-4Z"/><path d="M17 11h2a2 2 0 0 1 0 4h-2"/></svg>';
+
+    function setText(key: string, value: string | number) {
+      document.querySelectorAll<HTMLElement>(`[data-key="${key}"]`).forEach((el) => {
+        el.textContent = String(value);
+      });
+    }
+
+    async function load() {
+      try {
+        const res = await fetch('/api/admin/stats', { cache: 'no-store' });
+        if (!res.ok) throw new Error(await res.text());
+        const data = (await res.json()) as Stats;
+
+        const inactive = Math.max(0, (data.quotes.total ?? 0) - (data.quotes.active ?? 0));
+
+        setText('views_week', data.views.week.toLocaleString());
+        setText('views_today_text', `오늘 ${data.views.today.toLocaleString()}명이 문장을 만났어요`);
+        setText('likes_week', data.likes.week.toLocaleString());
+        setText('likes_today_text', `오늘 좋아요 ${data.likes.today.toLocaleString()}회`);
+        setText('quotes_active', data.quotes.active);
+        setText('quotes_total', data.quotes.total);
+        setText('quotes_inactive_text', inactive === 0 ? '모두 공개 중' : `비공개 ${inactive}개`);
+        setText('drinks_active', data.drinks.active);
+
+        setText('views_today', data.views.today);
+        setText('likes_today', data.likes.today);
+        setText('quotes_active_today', data.quotes.active);
+
+        const todayHeadline = document.getElementById('todayHeadline');
+        if (todayHeadline) {
+          todayHeadline.innerHTML = data.views.today === 0
+            ? '오늘 첫 문장을 기다리는 중이에요.'
+            : `오늘 <em style="font-style:italic;color:#d4b88c">${data.views.today.toLocaleString()}명</em>의 마음에 문장이 닿았어요.`;
+        }
+        const t = document.getElementById('todayTime');
+        if (t) {
+          const now = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Seoul',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          }).format(new Date());
+          t.textContent = `KST ${now}`;
+        }
+
+        const wrap = document.getElementById('topQuotes');
+        if (wrap) {
+          if (data.topQuotes.length === 0) {
+            wrap.innerHTML = '<div class="row-empty">아직 노출된 문구가 없어요.</div>';
+          } else {
+            const max = Math.max(...data.topQuotes.map((q) => q.views_7d), 1);
+            wrap.innerHTML = data.topQuotes.map((q, i) => {
+              const pct = q.views_7d === 0 ? 0 : Math.round((q.likes_7d / q.views_7d) * 100);
+              const fill = Math.round((q.views_7d / max) * 100);
+              return `
+                <div class="quote-row">
+                  <span class="quote-rank">${String(i + 1).padStart(2, '0')}</span>
+                  <div class="quote-body">
+                    <p>${escapeHTML(q.content)}</p>
+                    <span>전체 노출 ${q.views_total.toLocaleString()} · 좋아요 ${q.likes_total.toLocaleString()}</span>
+                  </div>
+                  <div class="quote-stat"><span class="num">${q.views_7d}</span><span class="lbl">views</span></div>
+                  <div class="quote-stat"><span class="num">${q.likes_7d}</span><span class="lbl">likes</span></div>
+                  <div class="quote-bar">
+                    <div class="track"><div class="fill" style="width:${fill}%"></div></div>
+                    <span class="pct">${pct}%</span>
+                  </div>
+                </div>`;
+            }).join('');
+          }
+        }
+
+        const pool = document.getElementById('drinkPool');
+        if (pool) {
+          if (data.drinkPool.length === 0) {
+            pool.innerHTML = '<div class="row-empty">아직 음료가 없어요.</div>';
+          } else {
+            pool.innerHTML = data.drinkPool.map((d) => `
+              <div class="drink-row">
+                <div class="drink-icon">${COFFEE_ICON}</div>
+                <div class="drink-body">
+                  <span class="drink-name">${escapeHTML(d.name)}</span>
+                  <span class="drink-note">${escapeHTML(d.note || (d.is_active ? '활성' : '비활성'))}</span>
+                </div>
+                <span class="drink-count">${d.usage_7d}회</span>
+                <div class="drink-status${d.is_active ? '' : ' is-off'}" title="${d.is_active ? 'active' : 'inactive'}"></div>
+              </div>`).join('');
+          }
+        }
+
+        document.getElementById('statsRow')?.removeAttribute('aria-busy');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function escapeHTML(s: string): string {
+      return s.replace(/[&<>"']/g, (c) => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>
+      )[c] || c);
+    }
+
+    load();
+  </script>
+</AdminLayout>
