@@ -232,6 +232,11 @@ const navItems: { key: Props['active']; href: string; label: string; icon: strin
       flex-direction: column;
       padding: 28px 20px;
       gap: 28px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      align-self: flex-start;
+      overflow-y: auto;
     }
 
     .brand {
@@ -366,6 +371,8 @@ const navItems: { key: Props['active']; href: string; label: string; icon: strin
         justify-content: space-between;
         padding: 14px 20px;
         gap: 20px;
+        height: auto;
+        overflow-y: visible;
       }
       .section-cap, .sidebar-bottom > div, .nav-item span {
         display: none;
