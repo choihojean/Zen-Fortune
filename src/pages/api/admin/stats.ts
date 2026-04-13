@@ -18,8 +18,10 @@ export const GET: APIRoute = async (ctx) => {
     const [
       viewsToday,
       viewsWeek,
+      viewsTotal,
       likesToday,
       likesWeek,
+      likesTotal,
       quotesActive,
       quotesTotal,
       drinksActive,
@@ -28,8 +30,10 @@ export const GET: APIRoute = async (ctx) => {
     ] = await Promise.all([
       sb.from('daily_fortunes').select('*', { count: 'exact', head: true }).eq('date_key', today),
       sb.from('daily_fortunes').select('*', { count: 'exact', head: true }).gte('date_key', sevenAgoKey),
+      sb.from('daily_fortunes').select('*', { count: 'exact', head: true }),
       sb.from('likes').select('*', { count: 'exact', head: true }).eq('date_key', today),
       sb.from('likes').select('*', { count: 'exact', head: true }).gte('date_key', sevenAgoKey),
+      sb.from('likes').select('*', { count: 'exact', head: true }),
       sb.from('quotes').select('*', { count: 'exact', head: true }).eq('is_active', true),
       sb.from('quotes').select('*', { count: 'exact', head: true }),
       sb.from('drinks').select('*', { count: 'exact', head: true }).eq('is_active', true),
@@ -39,8 +43,8 @@ export const GET: APIRoute = async (ctx) => {
 
     return Response.json({
       today,
-      views: { today: viewsToday.count ?? 0, week: viewsWeek.count ?? 0 },
-      likes: { today: likesToday.count ?? 0, week: likesWeek.count ?? 0 },
+      views: { today: viewsToday.count ?? 0, week: viewsWeek.count ?? 0, total: viewsTotal.count ?? 0 },
+      likes: { today: likesToday.count ?? 0, week: likesWeek.count ?? 0, total: likesTotal.count ?? 0 },
       quotes: { active: quotesActive.count ?? 0, total: quotesTotal.count ?? 0 },
       drinks: { active: drinksActive.count ?? 0 },
       topQuotes: topQuotes.data ?? [],
