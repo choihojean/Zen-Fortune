@@ -82,7 +82,11 @@ import AdminLayout from '@/layouts/AdminLayout.astro';
       <span class="list-count" id="listCount">—</span>
     </div>
     <div id="rows" class="rows">
-      <div class="row-empty">불러오는 중…</div>
+      <div class="row-empty">
+        <div class="empty-mark">&ldquo;</div>
+        <p class="empty-title">잠시만요</p>
+        <p class="empty-sub">문장을 정리해서 불러오는 중이에요.</p>
+      </div>
     </div>
   </section>
 
@@ -111,20 +115,114 @@ import AdminLayout from '@/layouts/AdminLayout.astro';
     .list-count { font-family: var(--font-ui); font-size: 12px; color: #8a7454; }
 
     .rows { display: flex; flex-direction: column; }
-    .row-empty { padding: 22px 24px; font-family: var(--font-ui-kr); font-size: 13px; color: #a68f6e; }
+  </style>
 
-    .qrow { padding: 18px 24px; display: flex; align-items: flex-start; gap: 16px; border-bottom: 1px solid #f3ecdc; }
+  <!-- Styles for elements that are injected by JS via innerHTML.
+       Astro's scoped styles add a per-component data-attribute selector,
+       which dynamic DOM never has. Keep these global. -->
+  <style is:global>
+    .row-empty {
+      padding: 56px 24px 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      text-align: center;
+    }
+    .row-empty .empty-mark {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 64px;
+      line-height: 1;
+      color: #d8c9ad;
+      letter-spacing: -0.04em;
+      margin-bottom: 6px;
+    }
+    .row-empty .empty-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 20px;
+      color: #1a1612;
+      letter-spacing: -0.01em;
+    }
+    .row-empty .empty-sub {
+      margin: 0;
+      font-family: var(--font-ui-kr);
+      font-size: 13px;
+      color: #a68f6e;
+    }
+
+    .qrow { padding: 22px 28px; display: flex; align-items: flex-start; gap: 20px; border-bottom: 1px solid #f3ecdc; }
     .qrow:last-child { border-bottom: 0; }
     .qrow.is-editing { background: #fffaf0; }
 
-    .qrow-id { width: 36px; flex-shrink: 0; font-family: var(--font-display); font-style: italic; font-size: 16px; color: #c4b49a; padding-top: 2px; }
-    .qrow-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
-    .qrow-body .qtext { margin: 0; font-family: var(--font-quote); font-weight: 500; font-size: 15px; line-height: 24px; color: #1a1612; word-break: keep-all; white-space: pre-line; }
-    .qrow-body .qmeta { font-family: var(--font-ui); font-size: 11px; color: #8a7454; }
-    .qrow-stat { width: 76px; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; padding-top: 2px; }
-    .qrow-stat .num { font-family: var(--font-ui); font-size: 13px; font-weight: 600; color: #1a1612; }
-    .qrow-stat .lbl { font-family: var(--font-ui); font-size: 10px; color: #a68f6e; letter-spacing: 0.06em; text-transform: uppercase; }
-    .qrow-actions { display: flex; flex-shrink: 0; align-items: center; gap: 4px; padding-top: 2px; }
+    .qrow-id {
+      width: 44px;
+      flex-shrink: 0;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 22px;
+      color: #c4b49a;
+      letter-spacing: -0.02em;
+      padding-top: 4px;
+    }
+    .qrow-body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .qrow-body .qtext {
+      position: relative;
+      margin: 0;
+      padding-left: 22px;
+      font-family: var(--font-quote);
+      font-weight: 500;
+      font-size: 17px;
+      line-height: 30px;
+      color: #1a1612;
+      letter-spacing: -0.01em;
+      word-break: keep-all;
+      white-space: pre-line;
+    }
+    .qrow-body .qtext::before {
+      content: '\201C';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 30px;
+      line-height: 1;
+      color: #c4b49a;
+    }
+    .qrow-body .qmeta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-ui);
+      font-size: 11px;
+      font-weight: 500;
+      color: #8a7454;
+      letter-spacing: 0.02em;
+    }
+    .qrow-body .qmeta .dot { width: 3px; height: 3px; border-radius: 999px; background: #d8c9ad; flex-shrink: 0; }
+
+    .qrow-stat {
+      width: 64px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      padding-top: 6px;
+    }
+    .qrow-stat .num { font-family: var(--font-display); font-weight: 500; font-size: 18px; color: #1a1612; line-height: 1; }
+    .qrow-stat .lbl { margin-top: 4px; font-family: var(--font-ui); font-size: 10px; color: #a68f6e; letter-spacing: 0.08em; text-transform: uppercase; }
+    .qrow-actions { display: flex; flex-shrink: 0; align-items: center; gap: 4px; padding-top: 4px; }
   </style>
 
   <script>
@@ -154,7 +252,7 @@ import AdminLayout from '@/layouts/AdminLayout.astro';
       const data = await res.json() as { drinks?: Drink[] };
       drinksCache = data.drinks || [];
       const sel = document.getElementById('quoteOverride') as unknown as HTMLSelectElement;
-      sel.innerHTML = '<option value="">— 랜덤 풀에서 —</option>' +
+      sel.innerHTML = '<option value="">랜덤 음료</option>' +
         drinksCache
           .filter((d) => d.is_active)
           .map((d) => `<option value="${d.id}">${escapeHTML(d.name)}</option>`)
@@ -174,7 +272,12 @@ import AdminLayout from '@/layouts/AdminLayout.astro';
       count.textContent = `${quotesCache.length}개`;
 
       if (quotesCache.length === 0) {
-        wrap.innerHTML = '<div class="row-empty">아직 등록된 문구가 없어요. 위에서 추가해 보세요.</div>';
+        wrap.innerHTML = `
+          <div class="row-empty">
+            <div class="empty-mark">&ldquo;</div>
+            <p class="empty-title">아직 도착한 문장이 없어요</p>
+            <p class="empty-sub">위에서 첫 글귀를 더해주세요.</p>
+          </div>`;
         return;
       }
 
@@ -182,16 +285,20 @@ import AdminLayout from '@/layouts/AdminLayout.astro';
         const drinkName = q.drink_override_id
           ? drinksCache.find((d) => d.id === q.drink_override_id)?.name
           : null;
-        const meta = drinkName
+        const pairing = drinkName
           ? `전용 음료 · ${escapeHTML(drinkName)}`
-          : '랜덤 음료 풀 사용';
+          : '랜덤 음료 풀';
         const status = q.is_active ? '공개' : '비공개';
         return `
           <div class="qrow" data-id="${q.id}">
-            <span class="qrow-id">#${q.id}</span>
+            <span class="qrow-id">${String(q.id).padStart(2, '0')}</span>
             <div class="qrow-body">
               <p class="qtext">${escapeHTML(q.content)}</p>
-              <span class="qmeta">${meta} · ${status}</span>
+              <span class="qmeta">
+                <span>${pairing}</span>
+                <span class="dot"></span>
+                <span>${status}</span>
+              </span>
             </div>
             <div class="qrow-stat">
               <span class="num">${q.views_total.toLocaleString()}</span>
@@ -266,7 +373,7 @@ import AdminLayout from '@/layouts/AdminLayout.astro';
     function startInlineEdit(row: HTMLElement, q: QuoteRow) {
       row.classList.add('is-editing');
       const body = row.querySelector('.qrow-body') as HTMLElement;
-      const drinkOpts = '<option value="">— 랜덤 풀에서 —</option>' +
+      const drinkOpts = '<option value="">랜덤 음료</option>' +
         drinksCache.filter((d) => d.is_active).map((d) =>
           `<option value="${d.id}"${d.id === q.drink_override_id ? ' selected' : ''}>${escapeHTML(d.name)}</option>`
         ).join('');

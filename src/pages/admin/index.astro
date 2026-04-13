@@ -25,7 +25,6 @@ const greeting = hour < 5 ? 'Good night' : hour < 12 ? 'Good morning' : hour < 1
       <p class="meta">{dateLabel}의 풍경</p>
     </div>
     <div class="head-actions">
-      <a class="btn btn-secondary" href="/admin/quotes">문구 관리 →</a>
       <a class="btn btn-primary" href="/admin/quotes#new">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5 12h14M12 5v14"></path>
@@ -275,117 +274,6 @@ const greeting = hour < 5 ? 'Good night' : hour < 12 ? 'Good morning' : hour < 1
       flex-direction: column;
     }
 
-    .row-empty {
-      padding: 22px 24px;
-      font-family: var(--font-ui-kr);
-      font-size: 13px;
-      color: #a68f6e;
-    }
-
-    .quote-row {
-      padding: 16px 24px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      border-bottom: 1px solid #f3ecdc;
-    }
-
-    .quote-row:last-child {
-      border-bottom: 0;
-    }
-
-    .quote-rank {
-      width: 28px;
-      flex-shrink: 0;
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: 20px;
-      color: #c4b49a;
-    }
-
-    .quote-body {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .quote-body p {
-      margin: 0;
-      font-family: var(--font-quote);
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 22px;
-      color: #1a1612;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .quote-body span {
-      font-family: var(--font-ui);
-      font-size: 11px;
-      color: #8a7454;
-    }
-
-    .quote-stat {
-      width: 64px;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 2px;
-    }
-
-    .quote-stat .num {
-      font-family: var(--font-ui);
-      font-size: 13px;
-      font-weight: 600;
-      color: #1a1612;
-    }
-
-    .quote-stat .lbl {
-      font-family: var(--font-ui);
-      font-size: 10px;
-      color: #a68f6e;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .quote-bar {
-      width: 96px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      justify-content: flex-end;
-    }
-
-    .quote-bar .track {
-      flex: 1;
-      height: 4px;
-      background: #f3ecdc;
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .quote-bar .fill {
-      height: 100%;
-      background: #1a1612;
-      border-radius: 999px;
-    }
-
-    .quote-bar .pct {
-      width: 36px;
-      flex-shrink: 0;
-      text-align: right;
-      font-family: var(--font-ui);
-      font-size: 10px;
-      font-weight: 600;
-      color: #8a7454;
-    }
-
     .today-card {
       padding: 22px;
       display: flex;
@@ -466,72 +354,6 @@ const greeting = hour < 5 ? 'Good night' : hour < 12 ? 'Good morning' : hour < 1
       flex-direction: column;
     }
 
-    .drink-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 0;
-      border-bottom: 1px solid #f3ecdc;
-    }
-
-    .drink-row:last-child {
-      border-bottom: 0;
-    }
-
-    .drink-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: #f6ede0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      color: #8a7454;
-    }
-
-    .drink-body {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .drink-name {
-      font-family: var(--font-ui);
-      font-size: 13px;
-      font-weight: 600;
-      color: #1a1612;
-    }
-
-    .drink-note {
-      font-family: var(--font-ui-kr);
-      font-size: 11px;
-      color: #8a7454;
-    }
-
-    .drink-count {
-      width: 48px;
-      flex-shrink: 0;
-      text-align: right;
-      font-family: var(--font-ui);
-      font-size: 12px;
-      font-weight: 500;
-      color: #8a7454;
-    }
-
-    .drink-status {
-      width: 6px;
-      height: 6px;
-      flex-shrink: 0;
-      border-radius: 999px;
-      background: #1a1612;
-    }
-
-    .drink-status.is-off {
-      background: #d4c5a8;
-    }
 
     @media (max-width: 1100px) {
       .stats { grid-template-columns: repeat(2, 1fr); }
@@ -540,11 +362,74 @@ const greeting = hour < 5 ? 'Good night' : hour < 12 ? 'Good morning' : hour < 1
     }
   </style>
 
+  <!-- Styles for elements injected by JS via innerHTML.
+       Astro's scoped styles add a per-component data-attribute selector,
+       which dynamic DOM never has — so these need to be global. -->
+  <style is:global>
+    .row-empty {
+      padding: 22px 24px;
+      font-family: var(--font-ui-kr);
+      font-size: 13px;
+      color: #a68f6e;
+    }
+
+    .quote-row {
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid #f3ecdc;
+    }
+    .quote-row:last-child { border-bottom: 0; }
+
+    .quote-rank {
+      width: 28px;
+      flex-shrink: 0;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 20px;
+      color: #c4b49a;
+    }
+
+    .quote-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+    .quote-body p {
+      margin: 0;
+      font-family: var(--font-quote);
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 22px;
+      color: #1a1612;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .quote-body span { font-family: var(--font-ui); font-size: 11px; color: #8a7454; }
+
+    .quote-stat { width: 64px; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+    .quote-stat .num { font-family: var(--font-ui); font-size: 13px; font-weight: 600; color: #1a1612; }
+    .quote-stat .lbl { font-family: var(--font-ui); font-size: 10px; color: #a68f6e; letter-spacing: 0.06em; text-transform: uppercase; }
+
+    .quote-bar { width: 96px; flex-shrink: 0; display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+    .quote-bar .track { flex: 1; height: 4px; background: #f3ecdc; border-radius: 999px; overflow: hidden; }
+    .quote-bar .fill { height: 100%; background: #1a1612; border-radius: 999px; }
+    .quote-bar .pct { width: 36px; flex-shrink: 0; text-align: right; font-family: var(--font-ui); font-size: 10px; font-weight: 600; color: #8a7454; }
+
+    .drink-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f3ecdc; }
+    .drink-row:last-child { border-bottom: 0; }
+    .drink-icon { width: 32px; height: 32px; border-radius: 8px; background: #f6ede0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #8a7454; }
+    .drink-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .drink-name { font-family: var(--font-display); font-weight: 500; font-size: 15px; color: #1a1612; letter-spacing: -0.005em; }
+    .drink-note { font-family: var(--font-ui-kr); font-size: 11px; color: #8a7454; }
+    .drink-count { width: 48px; flex-shrink: 0; text-align: right; font-family: var(--font-ui); font-size: 12px; font-weight: 500; color: #8a7454; }
+    .drink-status { width: 6px; height: 6px; flex-shrink: 0; border-radius: 999px; background: #1a1612; }
+    .drink-status.is-off { background: #d4c5a8; }
+  </style>
+
   <script>
     type Stats = {
       today: string;
-      views: { today: number; week: number };
-      likes: { today: number; week: number };
+      views: { today: number; week: number; total: number };
+      likes: { today: number; week: number; total: number };
       quotes: { active: number; total: number };
       drinks: { active: number };
       topQuotes: Array<{
@@ -582,8 +467,10 @@ const greeting = hour < 5 ? 'Good night' : hour < 12 ? 'Good morning' : hour < 1
         const inactive = Math.max(0, (data.quotes.total ?? 0) - (data.quotes.active ?? 0));
 
         setText('views_week', data.views.week.toLocaleString());
+        setText('views_total', data.views.total.toLocaleString());
         setText('views_today_text', `오늘 ${data.views.today.toLocaleString()}명이 문장을 만났어요`);
         setText('likes_week', data.likes.week.toLocaleString());
+        setText('likes_total', data.likes.total.toLocaleString());
         setText('likes_today_text', `오늘 좋아요 ${data.likes.today.toLocaleString()}회`);
         setText('quotes_active', data.quotes.active);
         setText('quotes_total', data.quotes.total);
