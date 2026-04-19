@@ -7,10 +7,10 @@ const next = Astro.url.searchParams.get('next') || '/admin';
   <main class="login">
     <div class="login-card">
       <div class="login-brand">
-        <img src="/roasteryzen_logo.png" alt="ROASTERY ZEN" />
+        <div class="login-mark">JB</div>
         <div>
-          <span class="login-cap">ROASTERY ZEN</span>
-          <span class="login-sub">admin console</span>
+          <span class="login-cap">JUNIOR BOARD</span>
+          <span class="login-sub">console</span>
         </div>
       </div>
 
@@ -68,11 +68,20 @@ const next = Astro.url.searchParams.get('next') || '/admin';
       margin-bottom: 12px;
     }
 
-    .login-brand img {
+    .login-mark {
       width: 36px;
       height: 36px;
       border-radius: 8px;
       background: #1a1612;
+      color: #f4ead9;
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
     .login-brand div {

@@ -21,16 +21,8 @@ const greeting = hour < 5 ? 'Good night' : hour < 12 ? 'Good morning' : hour < 1
         <span class="rule"></span>
         <span class="label">Overview</span>
       </div>
-      <h1 class="title">{greeting}, <em>Zen.</em></h1>
-      <p class="meta">{dateLabel}의 풍경</p>
-    </div>
-    <div class="head-actions">
-      <a class="btn btn-primary" href="/admin/quotes#new">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 12h14M12 5v14"></path>
-        </svg>
-        <span>새 글귀</span>
-      </a>
+      <h1 class="title">{greeting}.</h1>
+      <p class="meta">{dateLabel}의 기록</p>
     </div>
   </header>
 
@@ -85,7 +77,7 @@ const greeting = hour < 5 ? 'Good night' : hour < 12 ? 'Good morning' : hour < 1
           <span class="admin-cap">Top Quotes</span>
           <h2 class="card-title">이번 주 가장 사랑받은 문장</h2>
         </div>
-        <a href="/admin/quotes" class="card-link">모두 보기 →</a>
+        <a href="/admin/quotes" class="btn btn-secondary" style="padding:8px 12px; font-size:11px;">관리 →</a>
       </div>
       <div id="topQuotes" class="rows">
         <div class="row-empty">불러오는 중…</div>
@@ -100,7 +92,7 @@ const greeting = hour < 5 ? 'Good night' : hour < 12 ? 'Good morning' : hour < 1
         </div>
         <span class="today-time" id="todayTime">KST</span>
       </div>
-      <p class="today-headline" id="todayHeadline">오늘의 풍경을 가져오는 중…</p>
+      <p class="today-headline" id="todayHeadline">오늘의 기록을 가져오는 중…</p>
       <div class="today-grid">
         <div>
           <div class="today-num" data-key="views_today">—</div>

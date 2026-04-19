@@ -8,13 +8,14 @@ interface Props {
 
 const { title, active } = Astro.props;
 
-const navItems: { key: Props['active']; href: string; label: string; icon: string }[] = [
-  {
-    key: 'overview',
-    href: '/admin',
-    label: 'Overview',
-    icon: 'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z',
-  },
+const overviewItem = {
+  key: 'overview' as const,
+  href: '/admin',
+  label: 'Dashboard',
+  icon: 'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z',
+};
+
+const zenItems: { key: Props['active']; href: string; label: string; icon: string }[] = [
   {
     key: 'quotes',
     href: '/admin/quotes',
@@ -33,17 +34,26 @@ const navItems: { key: Props['active']; href: string; label: string; icon: strin
   <div class="admin-shell">
     <aside class="sidebar">
       <div class="brand">
-        <img src="/roasteryzen_logo.png" alt="ROASTERY ZEN" />
+        <div class="brand-mark">JB</div>
         <div>
-          <span class="brand-cap">ROASTERY ZEN</span>
-          <span class="brand-sub">admin console</span>
+          <span class="brand-cap">JUNIOR BOARD</span>
+          <span class="brand-sub">console</span>
         </div>
       </div>
 
-      <div class="section-cap">Workspace</div>
+      <nav class="nav">
+        <a href={overviewItem.href} class={`nav-item${active === overviewItem.key ? ' is-active' : ''}`}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d={overviewItem.icon} />
+          </svg>
+          <span>{overviewItem.label}</span>
+        </a>
+      </nav>
+
+      <div class="section-cap">Zen Fortune</div>
 
       <nav class="nav">
-        {navItems.map((item) => (
+        {zenItems.map((item) => (
           <a href={item.href} class={`nav-item${active === item.key ? ' is-active' : ''}`}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
               <path d={item.icon} />
@@ -246,10 +256,20 @@ const navItems: { key: Props['active']; href: string; label: string; icon: strin
       padding: 0 6px;
     }
 
-    .brand img {
+    .brand-mark {
       width: 32px;
       height: 32px;
       border-radius: 8px;
+      background: #f4ead9;
+      color: #1a1612;
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
     .brand div {
