@@ -111,6 +111,25 @@ const weekdayLabel = new Intl.DateTimeFormat('en-US', {
       justify-content: center;
       flex-shrink: 0;
       color: var(--ink);
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease, transform 0.12s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .pairing-mark:hover {
+      background: var(--ink);
+      color: #ffffff;
+    }
+
+    .pairing-mark:active {
+      transform: scale(0.94);
+    }
+
+    .pairing-mark:focus-visible {
+      outline: 2px solid var(--ink);
+      outline-offset: 2px;
     }
 
     .footer-bar {

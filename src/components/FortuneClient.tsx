@@ -46,6 +46,25 @@ function formatQuote(text: string): string {
   return text.replace(/([.,，。!?])\s*/g, '$1\n').trim();
 }
 
+const APP_LINKS = {
+  iosStoreUrl: 'https://apps.apple.com/kr/app/roastery-zen/id6502147969',
+  androidPackage: 'com.citroorder.roasteryzen',
+  androidStoreUrl:
+    'https://play.google.com/store/apps/details?id=com.citroorder.roasteryzen',
+};
+
+function openZenApp(): void {
+  const isAndroid = /android/i.test(navigator.userAgent);
+
+  if (isAndroid) {
+    const fallback = encodeURIComponent(APP_LINKS.androidStoreUrl);
+    window.location.href = `intent://#Intent;package=${APP_LINKS.androidPackage};S.browser_fallback_url=${fallback};end`;
+    return;
+  }
+
+  window.location.href = APP_LINKS.iosStoreUrl;
+}
+
 export default function FortuneClient() {
   const [fortune, setFortune] = useState<Fortune | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -122,14 +141,19 @@ export default function FortuneClient() {
             <span className="pairing-name">{fortune.drink}</span>
             {fortune.drinkNote && <span className="pairing-note">{fortune.drinkNote}</span>}
           </div>
-          <div className="pairing-mark" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <button
+            type="button"
+            className="pairing-mark"
+            onClick={openZenApp}
+            aria-label="ROASTERY ZEN 앱 열기"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M3 10h14v4a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5v-4Z" />
               <path d="M17 11h2a2 2 0 0 1 0 4h-2" />
               <path d="M7 3c.8 1.2.8 2.4 0 3.6" />
               <path d="M11 3c.8 1.2.8 2.4 0 3.6" />
             </svg>
-          </div>
+          </button>
         </div>
       )}
 
