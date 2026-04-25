@@ -177,12 +177,30 @@ const weekdayLabel = new Intl.DateTimeFormat('en-US', {
       background: #ffffff;
       color: var(--ink);
       border: 1px solid var(--hairline-strong);
-      padding: 10px 14px;
+      padding: 8px 14px;
     }
 
     .like-clover {
-      font-size: 18px;
-      line-height: 1;
+      width: 24px;
+      height: 24px;
+      display: block;
+      object-fit: contain;
+    }
+
+    .like-btn.is-liked .like-clover {
+      animation: like-clover-pop 520ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes like-clover-pop {
+      0% { transform: scale(0.4); opacity: 0; }
+      55% { transform: scale(1.25); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .like-btn.is-liked .like-clover {
+        animation: none;
+      }
     }
   </style>
 

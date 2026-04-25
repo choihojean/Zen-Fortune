@@ -146,7 +146,7 @@ export default function FortuneClient() {
           aria-label={liked ? '좋아요 완료' : '좋아요'}
         >
           {liked ? (
-            <span className="like-clover" aria-hidden="true">🍀</span>
+            <img className="like-clover" src="/clover.png" alt="" aria-hidden="true" />
           ) : (
             <>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
