@@ -1,0 +1,23 @@
+---
+import Base from '@/layouts/Base.astro';
+import TumblerDraw from '@/components/TumblerDraw';
+---
+<Base title="텀블러 추첨 | ROASTERY ZEN" bodyClass="draw-body">
+  <TumblerDraw client:load />
+
+  <style is:global>
+    .draw-body {
+      margin: 0;
+      padding: 0;
+      background: #0a0807;
+      color: #f4ead9;
+      overflow: hidden;
+      font-family: var(--font-ui-kr);
+      min-height: 100vh;
+    }
+
+    html:has(.draw-body) {
+      background: #0a0807;
+    }
+  </style>
+</Base>
