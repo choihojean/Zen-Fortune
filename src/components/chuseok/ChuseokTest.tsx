@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { AnswerMap, PublicQuestion } from '@/lib/chuseok/types';
-import { MoonFace, PoundingRabbit, PouchMark } from '@/components/chuseok/illustrations';
+import { PoundingRabbit, PouchMark } from '@/components/chuseok/illustrations';
 
 /**
  * 질문 화면. 질문 수·선택지 수는 props 로만 결정되며 화면 수정 없이 콘텐츠 교체가 가능하다.
@@ -301,7 +301,6 @@ export default function ChuseokTest({ questions, contentVersion, restart = false
 
       <section key={`card-${current.id}`} className="ch-qcard">
         <span className="ch-qbadge" aria-hidden="true">Q{progress.index + 1}</span>
-        <span className="ch-qface"><MoonFace /></span>
         <h1 className="ch-question" id="ch-question">{current.text}</h1>
       </section>
 

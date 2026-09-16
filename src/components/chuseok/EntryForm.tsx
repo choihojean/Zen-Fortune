@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { DrawState } from '@/lib/chuseok/event';
-import { Confetti, LuckyPouch } from '@/components/chuseok/illustrations';
+import { Confetti } from '@/components/chuseok/illustrations';
 
 /** 럭키드로우 응모 폼. 중복 여부 최종 판단은 서버가 한다 — 여기서는 안내만. */
 
@@ -143,7 +143,6 @@ export default function EntryForm({
 
   return (
     <section className="ch-draw">
-      <LuckyPouch />
       <div>
         <p className="ch-draw-cap">Lucky Draw</p>
         <h2 className="ch-draw-title">복주머니에 이름 넣기</h2>
