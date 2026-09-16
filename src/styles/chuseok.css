@@ -28,7 +28,8 @@
 }
 
 body.chuseok-body {
-  background: radial-gradient(circle at 20% 10%, var(--ch-bg-light) 0%, var(--ch-bg) 45%, var(--ch-bg-deep) 100%) fixed;
+  background: var(--ch-bg) radial-gradient(circle at 20% 10%, var(--ch-bg-light) 0%, var(--ch-bg) 45%, var(--ch-bg-deep) 100%) no-repeat;
+  background-size: 100% 100vh;
   color: var(--ch-ink);
   font-family: var(--font-ui-kr);
   min-height: 100vh;
@@ -202,7 +203,7 @@ html:has(.chuseok-body) { background: var(--ch-bg); }
   background: var(--ch-panel); border: 1.5px solid rgba(255, 243, 214, 0.18); color: var(--ch-ink);
   font-family: var(--font-ui-kr); font-size: 15px; line-height: 22px; cursor: pointer;
   display: flex; align-items: center; gap: 12px; word-break: keep-all;
-  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   -webkit-tap-highlight-color: transparent;
 }
 @media (hover: hover) { .ch-option:hover { border-color: rgba(255, 243, 214, 0.45); } }
@@ -216,7 +217,6 @@ html:has(.chuseok-body) { background: var(--ch-bg); }
 .ch-option-check { margin-left: auto; flex-shrink: 0; display: none; }
 .ch-option.is-selected {
   background: var(--ch-accent); border-color: var(--ch-accent); color: var(--ch-accent-ink); font-weight: 700;
-  transform: scale(1.02); box-shadow: 0 6px 0 var(--ch-accent-deep);
 }
 .ch-option.is-selected .ch-option-key { background: var(--ch-accent-ink); color: var(--ch-accent); }
 .ch-option.is-selected .ch-option-check { display: block; }
