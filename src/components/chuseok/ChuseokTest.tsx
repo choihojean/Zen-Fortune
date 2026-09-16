@@ -96,6 +96,8 @@ export default function ChuseokTest({ questions, contentVersion, restart = false
   const [progress, setProgress] = useState<Progress | null>(null);
   const [phase, setPhase] = useState<Phase>('quiz');
   const [flash, setFlash] = useState<string | null>(null);
+  // '이전' 으로 돌아온 문항에서만 기존 답을 표시한다. 앞으로 진행할 때는 어떤 보기도 선택 상태로 보이지 않게 한다.
+  const [revisit, setRevisit] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [loadingIdx, setLoadingIdx] = useState(0);
   const timers = useRef<number[]>([]);
@@ -182,8 +184,8 @@ export default function ChuseokTest({ questions, contentVersion, restart = false
       timers.current.push(
         window.setTimeout(() => {
           setFlash(null);
+          setRevisit(false);
           setProgress(next);
-          // 모바일에서 탭한 버튼의 focus/hover 상태가 다음 문항의 같은 자리 버튼에 남지 않도록 해제
           (document.activeElement as HTMLElement | null)?.blur?.();
           if (isLast) submit(next);
         }, SELECT_FLASH_MS)
@@ -195,6 +197,7 @@ export default function ChuseokTest({ questions, contentVersion, restart = false
   const back = useCallback(() => {
     if (!progress || progress.index === 0 || phase !== 'quiz') return;
     const next = { ...progress, index: progress.index - 1 };
+    setRevisit(true);
     setProgress(next);
     saveProgress(next);
   }, [progress, phase]);
@@ -296,24 +299,25 @@ export default function ChuseokTest({ questions, contentVersion, restart = false
         ))}
       </div>
 
-      <section className="ch-qcard">
+      <section key={`card-${current.id}`} className="ch-qcard">
         <span className="ch-qbadge" aria-hidden="true">Q{progress.index + 1}</span>
         <span className="ch-qface"><MoonFace /></span>
         <h1 className="ch-question" id="ch-question">{current.text}</h1>
       </section>
 
-      <ul className="ch-options" role="group" aria-labelledby="ch-question">
+      <ul key={current.id} className="ch-options" role="group" aria-labelledby="ch-question">
         {current.options.map((o, i) => {
-          const selected = flash === o.id || (!flash && answered === o.id);
+          const selected = flash === o.id;
+          const previous = !flash && revisit && answered === o.id;
           const dim = !!flash && flash !== o.id;
           return (
             <li key={o.id}>
               <button
                 type="button"
-                className={`ch-option${selected ? ' is-selected' : ''}${dim ? ' is-dim' : ''}`}
+                className={`ch-option${selected ? ' is-selected' : ''}${previous ? ' is-prev' : ''}${dim ? ' is-dim' : ''}`}
                 onClick={() => choose(o.id)}
                 disabled={!!flash}
-                aria-pressed={selected}
+                aria-pressed={selected || previous}
               >
                 <span className="ch-option-key" aria-hidden="true">{OPTION_KEYS[i] ?? i + 1}</span>
                 <span>{o.text}</span>
