@@ -40,8 +40,8 @@ const ogImageUrl = ogImage ? new URL(ogImage, Astro.url.origin).toString() : nul
     <meta property="og:description" content={description} />
     <meta property="og:url" content={pageUrl} />
     {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
-    {ogImageUrl && <meta property="og:image:width" content="256" />}
-    {ogImageUrl && <meta property="og:image:height" content="256" />}
+    {ogImageUrl && <meta property="og:image:width" content="400" />}
+    {ogImageUrl && <meta property="og:image:height" content="400" />}
     {ogImageUrl && ogImageAlt && <meta property="og:image:alt" content={ogImageAlt} />}
     <!-- summary(작은 썸네일) — Slack 전체 채널에서 공간을 덜 차지하도록. 큰 카드가 필요하면 summary_large_image -->
     <meta name="twitter:card" content="summary" />
