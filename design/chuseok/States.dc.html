@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; }
+    a { color: #ef6b4c; } a:hover { color: #b94a30; }
+  </style>
+</helmet>
+<div style="width: 390px; min-height: 1100px; box-sizing: border-box; background: #1b2140; color: #fff3d6; display: flex; flex-direction: column; padding: 22px; gap: 22px;">
+  <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.16em; color: rgba(255,243,214,0.5);">상태 변형 · 결과 페이지 안의 럭키드로우 카드 3종 + 오류 1종</span>
+
+  <section style="position: relative; display: flex; flex-direction: column; gap: 10px; padding: 24px 20px; border-radius: 26px; background: #fff3d6; color: #1b2140; overflow: hidden;">
+    <svg width="390" height="90" viewBox="0 0 390 90" fill="none" style="position: absolute; left: 0; top: 0; pointer-events: none;">
+      <rect x="30" y="18" width="10" height="4" rx="2" fill="#ef6b4c" transform="rotate(-20 35 20)"/>
+      <rect x="90" y="8" width="10" height="4" rx="2" fill="#7ea77b" transform="rotate(30 95 10)"/>
+      <rect x="150" y="26" width="10" height="4" rx="2" fill="#f4c86a" transform="rotate(-40 155 28)"/>
+      <rect x="230" y="10" width="10" height="4" rx="2" fill="#ef6b4c" transform="rotate(15 235 12)"/>
+      <rect x="300" y="24" width="10" height="4" rx="2" fill="#7ea77b" transform="rotate(-25 305 26)"/>
+      <rect x="350" y="12" width="10" height="4" rx="2" fill="#f4c86a" transform="rotate(40 355 14)"/>
+      <circle cx="60" cy="40" r="3" fill="#f4c86a"/><circle cx="200" cy="44" r="3" fill="#ef6b4c"/><circle cx="330" cy="46" r="3" fill="#7ea77b"/>
+    </svg>
+    <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.16em; color: #ef6b4c;">LUCKY DRAW</span>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <div style="flex-shrink: 0; width: 56px; height: 56px; border-radius: 999px; background: #7ea77b; display: flex; align-items: center; justify-content: center;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff8ec" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <h2 style="margin: 0; font-family: 'Jua', 'Noto Sans KR', sans-serif; font-weight: 400; font-size: 24px; line-height: 30px;">복주머니에 잘 들어갔어요!</h2>
+        <span style="font-size: 13px; color: rgba(27,33,64,0.65);">응모 완료</span>
+      </div>
+    </div>
+    <p style="margin: 0; font-size: 14px; line-height: 22px; color: rgba(27,33,64,0.8); word-break: keep-all;">당첨자는 이벤트가 끝난 뒤 타운홀에서 발표해요. 이 결과 링크를 저장해두면 언제든 다시 볼 수 있어요.</p>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 10px; padding: 24px 20px; border-radius: 26px; background: rgba(255,243,214,0.07); border: 1px solid rgba(255,243,214,0.14);">
+    <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.16em; color: #f4c86a;">LUCKY DRAW</span>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <div style="flex-shrink: 0; width: 56px; height: 56px; border-radius: 999px; background: rgba(244,200,106,0.18); display: flex; align-items: center; justify-content: center;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f4c86a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <h2 style="margin: 0; font-family: 'Jua', 'Noto Sans KR', sans-serif; font-weight: 400; font-size: 22px; line-height: 28px;">이미 응모하셨어요</h2>
+        <span style="font-size: 13px; color: rgba(255,243,214,0.6);">한 사람당 한 번</span>
+      </div>
+    </div>
+    <p style="margin: 0; font-size: 14px; line-height: 22px; color: rgba(255,243,214,0.8); word-break: keep-all;">테스트는 다시 해도 괜찮아요. 응모는 처음 결과로 그대로 남아 있어요.</p>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 10px; padding: 24px 20px; border-radius: 26px; background: rgba(255,243,214,0.07); border: 1px solid rgba(255,243,214,0.14);">
+    <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.16em; color: rgba(255,243,214,0.5);">LUCKY DRAW</span>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <div style="flex-shrink: 0; width: 56px; height: 56px; border-radius: 999px; background: rgba(255,243,214,0.1); display: flex; align-items: center; justify-content: center;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(255,243,214,0.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <h2 style="margin: 0; font-family: 'Jua', 'Noto Sans KR', sans-serif; font-weight: 400; font-size: 22px; line-height: 28px;">응모 기간이 끝났어요</h2>
+        <span style="font-size: 13px; color: rgba(255,243,214,0.6);">9월 30일 마감</span>
+      </div>
+    </div>
+    <p style="margin: 0; font-size: 14px; line-height: 22px; color: rgba(255,243,214,0.8); word-break: keep-all;">캐릭터 테스트는 계속 즐길 수 있어요. 당첨자 발표는 타운홀에서!</p>
+  </section>
+
+  <section style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 30px 22px; border-radius: 26px; background: #fff3d6; color: #1b2140;">
+    <svg width="96" height="96" viewBox="0 0 96 96" fill="none">
+      <circle cx="48" cy="48" r="40" fill="#f4c86a"/>
+      <circle cx="36" cy="44" r="3.5" fill="#1b2140"/><circle cx="60" cy="44" r="3.5" fill="#1b2140"/>
+      <path d="M38 62c5-5 15-5 20 0" stroke="#1b2140" stroke-width="3" stroke-linecap="round"/>
+      <path d="M28 30l8 4M68 30l-8 4" stroke="#1b2140" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <h2 style="margin: 0; font-family: 'Jua', 'Noto Sans KR', sans-serif; font-weight: 400; font-size: 24px; line-height: 30px;">어라, 결과가 사라졌어요</h2>
+      <p style="margin: 0; font-size: 14px; line-height: 22px; color: rgba(27,33,64,0.7); word-break: keep-all;">링크가 잘못됐거나 만료된 결과예요. 4분이면 다시 만날 수 있어요.</p>
+    </div>
+    <a href="#" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 54px; border-radius: 999px; background: #ef6b4c; color: #fff8ec; font-family: 'Jua', 'Noto Sans KR', sans-serif; font-size: 18px; text-decoration: none; box-shadow: 0 6px 0 #b94a30;">테스트 다시 하기</a>
+  </section>
+</div>
+</x-dc>
+</body>
+</html>

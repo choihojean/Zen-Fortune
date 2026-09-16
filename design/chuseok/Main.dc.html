@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; }
+    a { color: #ef6b4c; } a:hover { color: #b94a30; }
+    @keyframes pop { 0% { transform: scale(0.6) rotate(-6deg); opacity: 0; } 70% { transform: scale(1.06) rotate(2deg); opacity: 1; } 100% { transform: scale(1) rotate(0); } }
+    .pop { animation: pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+  </style>
+</helmet>
+<div style="width: 390px; min-height: 1720px; box-sizing: border-box; position: relative; background: radial-gradient(circle at 80% 6%, #2b3466 0%, #1b2140 30%, #141936 100%); color: #fff3d6; display: flex; flex-direction: column; padding: 20px 22px 32px; gap: 16px;">
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <div style="width: 28px; height: 28px; border-radius: 9px; background: #fff3d6; color: #1b2140; font-family: 'Jua', sans-serif; font-size: 12px; display: flex; align-items: center; justify-content: center;">JB</div>
+      <span style="font-size: 12px; font-weight: 700; color: rgba(255,243,214,0.8);">한가위 캐릭터 테스트</span>
+    </div>
+    <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.16em; color: #f4c86a;">RESULT</span>
+  </div>
+
+  <section class="pop" style="position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 30px 22px 26px; border-radius: 30px; background: #fff3d6; color: #1b2140; overflow: hidden;">
+    <div style="position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(rgba(27,33,64,0.06) 1px, transparent 1.4px); background-size: 14px 14px; opacity: 0.7;"></div>
+    <span style="position: relative; padding: 7px 14px; border-radius: 999px; background: #1b2140; color: #f4c86a; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; transform: rotate(-2deg);">당신의 한가위 캐릭터는</span>
+    <div style="position: relative; width: 200px; height: 200px; border-radius: 999px; background: #f4c86a; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 0 #e0ac47;">
+      <svg width="150" height="150" viewBox="0 0 150 150" fill="none">
+        <ellipse cx="75" cy="128" rx="46" ry="10" fill="rgba(123,90,58,0.25)"/>
+        <path d="M45 118c0-30 12-52 30-52s30 22 30 52c0 8-13 12-30 12s-30-4-30-12z" fill="#fff8ec"/>
+        <path d="M58 66c-6-22-2-42 6-50 5 12 5 32 3 48" fill="#fff8ec"/>
+        <path d="M92 66c6-22 2-42-6-50-5 12-5 32-3 48" fill="#fff8ec"/>
+        <path d="M62 24c3 10 3 28 1 40" stroke="#f7c9c0" stroke-width="5" stroke-linecap="round"/>
+        <path d="M88 24c-3 10-3 28-1 40" stroke="#f7c9c0" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="66" cy="92" r="3.5" fill="#1b2140"/><circle cx="84" cy="92" r="3.5" fill="#1b2140"/>
+        <path d="M71 102c2 3 6 3 8 0" stroke="#1b2140" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="58" cy="102" r="4.5" fill="#f7a99a" opacity="0.85"/><circle cx="92" cy="102" r="4.5" fill="#f7a99a" opacity="0.85"/>
+        <rect x="42" y="106" width="66" height="14" rx="7" fill="#ef6b4c"/>
+        <rect x="58" y="112" width="34" height="22" rx="6" fill="#b94a30"/>
+        <text x="75" y="46" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="10" font-weight="700" fill="#7b5a3a">일러스트 자리</text>
+      </svg>
+    </div>
+    <h1 style="position: relative; margin: 6px 0 0; font-family: 'Jua', 'Noto Sans KR', sans-serif; font-weight: 400; font-size: 36px; line-height: 44px; letter-spacing: -0.01em;">송편 사냥꾼</h1>
+    <p style="position: relative; margin: 0; font-size: 15px; line-height: 23px; color: rgba(27,33,64,0.7); word-break: keep-all;">명절 음식 앞에서는 누구보다 진지한 타입</p>
+    <div style="position: relative; display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;">
+      <span style="padding: 6px 11px; border-radius: 999px; background: #ef6b4c; color: #fff8ec; font-size: 12px; font-weight: 700;">#먹방형</span>
+      <span style="padding: 6px 11px; border-radius: 999px; background: #7ea77b; color: #fff8ec; font-size: 12px; font-weight: 700;">#휴식형</span>
+      <span style="padding: 6px 11px; border-radius: 999px; background: rgba(27,33,64,0.1); color: #1b2140; font-size: 12px; font-weight: 700;">#혼자형</span>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 10px; padding: 20px 20px; border-radius: 22px; background: rgba(255,243,214,0.07); border: 1px solid rgba(255,243,214,0.12);">
+    <span style="font-family: 'Jua', sans-serif; font-size: 15px; color: #f4c86a;">이런 사람이에요</span>
+    <p style="margin: 0; font-size: 15px; line-height: 25px; color: rgba(255,243,214,0.9); word-break: keep-all;">전이 익는 소리와 송편 찌는 냄새를 가장 먼저 알아차립니다. 상 위의 모든 음식을 골고루 맛보는 것이 명절의 의무라고 생각합니다.</p>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 14px; padding: 20px 20px; border-radius: 22px; background: rgba(255,243,214,0.07); border: 1px solid rgba(255,243,214,0.12);">
+    <span style="font-family: 'Jua', sans-serif; font-size: 15px; color: #f4c86a;">능력치</span>
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 12px; font-size: 13px;">
+        <span>연휴 생존력</span>
+        <div style="display: flex; gap: 5px;"><span style="flex: 1; height: 12px; border-radius: 999px; background: #f4c86a;"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: #f4c86a;"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: #f4c86a;"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: #f4c86a;"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: #f4c86a;"></span></div>
+      </div>
+      <div style="display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 12px; font-size: 13px;">
+        <span>눈치력</span>
+        <div style="display: flex; gap: 5px;"><span style="flex: 1; height: 12px; border-radius: 999px; background: #f4c86a;"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: #f4c86a;"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: rgba(255,243,214,0.14);"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: rgba(255,243,214,0.14);"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: rgba(255,243,214,0.14);"></span></div>
+      </div>
+      <div style="display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 12px; font-size: 13px;">
+        <span>먹방력</span>
+        <div style="display: flex; gap: 5px;"><span style="flex: 1; height: 12px; border-radius: 999px; background: #ef6b4c;"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: #ef6b4c;"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: #ef6b4c;"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: #ef6b4c;"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: #ef6b4c;"></span></div>
+      </div>
+      <div style="display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 12px; font-size: 13px;">
+        <span>집안일 기여도</span>
+        <div style="display: flex; gap: 5px;"><span style="flex: 1; height: 12px; border-radius: 999px; background: #f4c86a;"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: #f4c86a;"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: rgba(255,243,214,0.14);"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: rgba(255,243,214,0.14);"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: rgba(255,243,214,0.14);"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+    <div style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; border-radius: 20px; background: #fff3d6; color: #1b2140;">
+      <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #ef6b4c;">자주 하는 말</span>
+      <span style="font-family: 'Jua', sans-serif; font-size: 20px; line-height: 28px;">“이거 하나만 더 먹고요.”</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: 20px; background: rgba(126,167,123,0.18); border: 1px solid rgba(126,167,123,0.4);">
+      <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #a9d1a6;">잘 맞는 캐릭터</span>
+      <span style="font-size: 14px; font-weight: 700;">소파 수호자</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: 20px; background: rgba(239,107,76,0.16); border: 1px solid rgba(239,107,76,0.4);">
+      <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #f7a99a;">주의할 캐릭터</span>
+      <span style="font-size: 14px; font-weight: 700;">명절 총사령관</span>
+    </div>
+    <div style="grid-column: 1 / -1; display: flex; gap: 12px; align-items: center; padding: 14px 16px; border-radius: 20px; background: rgba(255,243,214,0.07); border: 1px solid rgba(255,243,214,0.12);">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f4c86a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/><path d="M9 21h6M10 17v2M14 17v2"/></svg>
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #f4c86a;">이번 명절 추천 행동</span>
+        <span style="font-size: 14px; line-height: 21px;">먹은 만큼 과일이라도 깎아보기</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="position: relative; display: flex; flex-direction: column; gap: 14px; padding: 24px 20px 22px; border-radius: 26px; background: linear-gradient(160deg, #f4c86a 0%, #ef6b4c 100%); color: #1b2140; overflow: hidden;">
+    <svg width="120" height="120" viewBox="0 0 120 120" fill="none" style="position: absolute; right: -20px; top: -24px; opacity: 0.35;"><path d="M60 10c-8 18-26 22-26 44 0 20 12 32 26 32s26-12 26-32c0-22-18-26-26-44z" fill="#fff8ec"/><path d="M40 40h40" stroke="#1b2140" stroke-width="6" stroke-linecap="round"/></svg>
+    <div style="position: relative; display: flex; flex-direction: column; gap: 4px;">
+      <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.16em; color: #1b2140;">LUCKY DRAW</span>
+      <h2 style="margin: 0; font-family: 'Jua', 'Noto Sans KR', sans-serif; font-weight: 400; font-size: 24px; line-height: 30px;">복주머니에 이름 넣기</h2>
+      <p style="margin: 0; font-size: 13px; line-height: 20px; color: rgba(27,33,64,0.75); word-break: keep-all;">이름과 이메일만 남기면 응모 완료. 한 사람당 한 번이에요.</p>
+    </div>
+    <div style="position: relative; display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; align-items: center; height: 50px; padding: 0 16px; border-radius: 14px; background: #fff8ec; color: rgba(27,33,64,0.45); font-size: 15px;">이름</div>
+      <div style="display: flex; align-items: center; height: 50px; padding: 0 16px; border-radius: 14px; background: #fff8ec; color: rgba(27,33,64,0.45); font-size: 15px;">이메일</div>
+      <label style="display: flex; align-items: flex-start; gap: 10px; min-height: 44px; font-size: 12px; line-height: 18px; color: rgba(27,33,64,0.8); word-break: keep-all;">
+        <span style="flex-shrink: 0; width: 18px; height: 18px; border-radius: 6px; border: 2px solid #1b2140; margin-top: 1px;"></span>
+        <span>참여 확인과 추첨·당첨자 발표에만 쓰고, 이벤트가 끝나면 지워요.</span>
+      </label>
+      <a href="#" style="display: flex; align-items: center; justify-content: center; height: 56px; border-radius: 999px; background: #1b2140; color: #fff3d6; font-family: 'Jua', 'Noto Sans KR', sans-serif; font-size: 18px; text-decoration: none; box-shadow: 0 6px 0 #0d1128;">럭키드로우 응모하기</a>
+    </div>
+  </section>
+
+  <div style="display: flex; gap: 10px;">
+    <a href="#" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; height: 46px; border-radius: 999px; border: 1.5px solid rgba(255,243,214,0.3); color: #fff3d6; font-size: 13px; font-weight: 700; text-decoration: none;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+      <span>결과 링크 복사</span>
+    </a>
+    <a href="#" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; height: 46px; border-radius: 999px; border: 1.5px solid rgba(255,243,214,0.3); color: #fff3d6; font-size: 13px; font-weight: 700; text-decoration: none;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+      <span>다시 해보기</span>
+    </a>
+  </div>
+  <p style="margin: 0; text-align: center; font-size: 12px; line-height: 18px; color: rgba(255,243,214,0.5); word-break: keep-all;">테스트는 몇 번이든 OK. 럭키드로우는 처음 응모한 결과로 한 번만 남아요.</p>
+</div>
+</x-dc>
+</body>
+</html>

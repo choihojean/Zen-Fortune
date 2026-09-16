@@ -1,0 +1,94 @@
+---
+import Base from '@/layouts/Base.astro';
+import '@/styles/chuseok.css';
+import { MoonRabbit, PouchMark } from '@/components/chuseok/illustrations';
+import { artwork } from '@/lib/chuseok/artwork';
+import { chuseokContent } from '@/lib/chuseok/content';
+import { formatKST, getEventStatus } from '@/lib/chuseok/event';
+
+let status = getEventStatus({});
+try {
+  const { readEnv } = await import('@/lib/env');
+  status = getEventStatus(readEnv(Astro));
+} catch {
+  /* env 미설정이어도 랜딩은 보여준다 */
+}
+
+const questionCount = chuseokContent.questions.length;
+const minutes = Math.max(2, Math.ceil(questionCount * 0.4));
+const closesLabel = formatKST(status.drawClosesAt);
+const opensLabel = formatKST(status.drawOpensAt);
+const drawLabel =
+  status.drawState === 'open'
+    ? closesLabel ? `${closesLabel} 마감` : '럭키드로우'
+    : status.drawState === 'not_started'
+      ? `${opensLabel} 시작`
+      : '응모 마감';
+---
+<Base
+  title="나만의 한가위 캐릭터 테스트 | Junior Board"
+  description={`명절 상황 ${questionCount}가지, 나라면 어떻게 할까? 답하고 나면 내 한가위 캐릭터가 나와요. 끝까지 하면 럭키드로우 응모까지!`}
+  bodyClass="chuseok-body"
+  ogImage="/chuseok/og/landing.jpg"
+  ogImageAlt="송편 바구니를 든 한가위 토끼"
+>
+  <main class="ch-page">
+    <div class="ch-stars" aria-hidden="true"></div>
+
+    <header class="ch-topbar">
+      <a class="ch-brand" href="/">
+        <span class="ch-brand-mark"><PouchMark /></span>
+        <span class="ch-brand-name">Junior Board</span>
+      </a>
+      <span class="ch-pill">2026 한가위 이벤트</span>
+    </header>
+
+    <section style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+      <span class="ch-sticker">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.4 5.6L20 9.3l-4.3 3.9L17 19l-5-2.8L7 19l1.3-5.8L4 9.3l5.6-.7z"/></svg>
+        <span>보름달 아래 나는 어떤 사람일까?</span>
+      </span>
+      <h1 class="ch-title">나만의 한가위<br />캐릭터 테스트</h1>
+      <p class="ch-lead">
+        명절 상황 {questionCount}가지, 나라면 어떻게 할까? 답하고 나면 내 한가위 캐릭터가 나와요. 끝까지 하면 럭키드로우 응모까지!
+      </p>
+    </section>
+
+    <div class="ch-illust">
+      {artwork.landing ? <img class="ch-illust-img" src={artwork.landing} alt="" width="230" height="230" /> : <MoonRabbit />}
+    </div>
+
+    <ul class="ch-meta">
+      <li class="ch-meta-item"><span class="k">문항</span><span class="v">{questionCount}개</span></li>
+      <li class="ch-meta-item"><span class="k">소요</span><span class="v">약 {minutes}분</span></li>
+      <li class="ch-meta-item is-accent"><span class="k">완료하면</span><span class="v">{drawLabel}</span></li>
+    </ul>
+
+    <div class="ch-actions" style="margin-top:auto;">
+      {status.testOpen ? (
+        <a class="ch-btn ch-btn-primary" href="/chuseok/test">
+          <span>테스트 시작하기</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      ) : (
+        <div class="ch-panel">
+          <p class="ch-panel-cap">테스트가 종료되었어요</p>
+          <p class="ch-desc">참여해 주셔서 감사합니다. 결과 페이지 링크는 계속 열어볼 수 있어요.</p>
+        </div>
+      )}
+      <a id="lastResultLink" class="ch-link" href="#" hidden>지난 결과 다시 보기</a>
+      <p class="ch-note">입력한 정보는 이벤트 참여 확인과 럭키드로우 추첨에만 쓰이고, 이벤트가 끝나면 삭제돼요.</p>
+    </div>
+  </main>
+
+  <script>
+    try {
+      const id = localStorage.getItem('jb-chuseok-last-result');
+      const a = document.getElementById('lastResultLink') as HTMLAnchorElement | null;
+      if (id && a && /^[0-9a-f-]{36}$/i.test(id)) {
+        a.href = `/chuseok/result/${id}`;
+        a.hidden = false;
+      }
+    } catch {}
+  </script>
+</Base>

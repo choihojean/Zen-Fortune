@@ -1,0 +1,251 @@
+{
+  "version": "jb-final-2026-09-16",
+  "_comment": "3축 8종. requiredTraits 는 축마다 하나씩(HANDS|REST, SOCIAL|SOLO, PLAN|FLOW). 세 성향 점수 합이 최대인 캐릭터 = 축별 다수결. imageUrl 이 null 이면 emoji 타일. 이미지는 /public/chuseok/characters/ 에 넣고 imageUrl 만 채우면 된다.",
+  "traits": [
+    {
+      "id": "HANDS",
+      "label": "손이 먼저",
+      "description": "일이 보이면 몸이 먼저 움직이는 쪽"
+    },
+    {
+      "id": "REST",
+      "label": "눕는 게 먼저",
+      "description": "일단 앉고 나서 생각하는 쪽"
+    },
+    {
+      "id": "SOCIAL",
+      "label": "다 같이",
+      "description": "사람 사이에 있을 때 충전되는 쪽"
+    },
+    {
+      "id": "SOLO",
+      "label": "나 혼자",
+      "description": "내 자리, 내 시간이 있어야 하는 쪽"
+    },
+    {
+      "id": "PLAN",
+      "label": "미리 계획",
+      "description": "순서와 시간을 정해두는 쪽"
+    },
+    {
+      "id": "FLOW",
+      "label": "그때 기분",
+      "description": "닥치면 하고 아니면 말고인 쪽"
+    }
+  ],
+  "fallbackCharacterId": "full_moon",
+  "characters": [
+    {
+      "id": "kitchen_commander",
+      "name": "상차림 사령관",
+      "emoji": "👩‍🍳",
+      "imageUrl": "/chuseok/characters/kitchen_commander.jpg",
+      "shortDescription": "상차림 순서가 이미 머릿속에 다 있다",
+      "description": "장 보기 목록은 D-7에 완성, 전은 몇 장 부쳤는지 세고 있고, 누가 뭘 할지는 이미 머릿속에서 배정이 끝났습니다. 덕분에 온 집안이 제시간에 돌아가지만, 명절이 끝나면 본인에게 연차가 필요합니다.",
+      "requiredTraits": [
+        "HANDS",
+        "SOCIAL",
+        "PLAN"
+      ],
+      "priority": 1,
+      "stats": {
+        "연휴 생존력": 3,
+        "눈치력": 5,
+        "먹방력": 2,
+        "집안일 기여도": 5
+      },
+      "catchphrase": "그건 제가 이미 해놨어요.",
+      "goodMatch": "dish_master",
+      "badMatch": "sofa_director",
+      "tip": "안방 평론가와 역할을 바꿔보세요!"
+    },
+    {
+      "id": "yes_fairy",
+      "name": "\"제가 할게요\" 요정",
+      "emoji": "🙋",
+      "imageUrl": "/chuseok/characters/yes_fairy.jpg",
+      "shortDescription": "모든 일에 먼저 나서지만 결과는 보장할 수 없다",
+      "description": "전 뒤집으라고 했는데 속을 뒤집고 있습니다. 그래도 미워할 수 없는 이유는 웃으면서 하기 때문. 열정 100, 방향은 랜덤이지만 이 사람이 있는 부엌은 시끄럽고 즐겁습니다.",
+      "requiredTraits": [
+        "HANDS",
+        "SOCIAL",
+        "FLOW"
+      ],
+      "priority": 2,
+      "stats": {
+        "연휴 생존력": 4,
+        "눈치력": 3,
+        "먹방력": 4,
+        "집안일 기여도": 4
+      },
+      "catchphrase": "어? 이거 아니었어요? 그럼 이것도 할게요!",
+      "goodMatch": "kitchen_commander",
+      "badMatch": "blanket_strategist",
+      "tip": "한 번만 더 생각해봅시다"
+    },
+    {
+      "id": "dish_master",
+      "name": "묵묵 설거지 장인",
+      "emoji": "🧽",
+      "imageUrl": "/chuseok/characters/dish_master.jpg",
+      "shortDescription": "말없이 싱크대를 지키는 사람. 그릇 정렬에 각도가 있다",
+      "description": "거실이 시끄러울 때 이 사람은 이미 싱크대 앞에 있습니다. 대화보다 수세미 소리가 편하고, 건조대 위 그릇은 크기순으로 서 있습니다. 명절이 끝나면 다들 이 사람이 있었다는 걸 뒤늦게 깨닫습니다.",
+      "requiredTraits": [
+        "HANDS",
+        "SOLO",
+        "PLAN"
+      ],
+      "priority": 3,
+      "stats": {
+        "연휴 생존력": 4,
+        "눈치력": 4,
+        "먹방력": 3,
+        "집안일 기여도": 5
+      },
+      "catchphrase": "괜찮아요, 제가 마무리할게요.",
+      "goodMatch": "kitchen_commander",
+      "badMatch": "talking_mc",
+      "tip": "주방과 거리두고 조카들과 놀아보세요!"
+    },
+    {
+      "id": "shadow_helper",
+      "name": "눈치 만렙 머신",
+      "emoji": "🥷",
+      "imageUrl": "/chuseok/characters/shadow_helper.jpg",
+      "shortDescription": "아무도 못 봤는데 쓰레기가 정리되어 있고 과일이 깎여 있다",
+      "description": "부르면 없고, 필요한 순간엔 이미 해놓고 사라져 있습니다. 가족 수다엔 없지만 상 위의 과일 접시는 이 사람 작품. 존재감은 낮은데 기여도는 높은 미스터리한 유형입니다.",
+      "requiredTraits": [
+        "HANDS",
+        "SOLO",
+        "FLOW"
+      ],
+      "priority": 4,
+      "stats": {
+        "연휴 생존력": 5,
+        "눈치력": 5,
+        "먹방력": 3,
+        "집안일 기여도": 4
+      },
+      "catchphrase": "아무 일도 없었다…",
+      "goodMatch": "yes_fairy",
+      "badMatch": "sofa_director",
+      "tip": "생색 내고 명절 음식 많이 챙겨오기"
+    },
+    {
+      "id": "sofa_director",
+      "name": "안방 평론가",
+      "emoji": "📺",
+      "imageUrl": "/chuseok/characters/sofa_director.jpg",
+      "shortDescription": "누워서 \"그건 이렇게 해야지\" 지시하는 판단력 담당",
+      "description": "손은 움직이지 않지만 판단은 정확합니다. 전이 탈 것 같으면 소파에서 먼저 알아채고, 누가 뭘 잘못하고 있는지도 다 보입니다. 다만 그걸 말로만 합니다. 리모컨은 이 사람 것입니다.",
+      "requiredTraits": [
+        "REST",
+        "SOCIAL",
+        "PLAN"
+      ],
+      "priority": 5,
+      "stats": {
+        "연휴 생존력": 5,
+        "눈치력": 4,
+        "먹방력": 4,
+        "집안일 기여도": 1
+      },
+      "catchphrase": "아니, 그거 그렇게 하면 안 되고~",
+      "goodMatch": "talking_mc",
+      "badMatch": "kitchen_commander",
+      "tip": "이번 추석엔 음식맛 평가 만큼은 참아볼까요?"
+    },
+    {
+      "id": "talking_mc",
+      "name": "인간 라디오",
+      "emoji": "📻",
+      "imageUrl": "/chuseok/characters/talking_mc.jpg",
+      "shortDescription": "노동은 수다로 대체한다. 분위기 담당",
+      "description": "일할 시간이 되면 이벤트를 열고, 어색한 침묵은 3초 안에 깨줍니다. 손에 물 묻힌 기억은 없는데 다들 이 사람 덕에 명절이 재미있었다고 말합니다. 억울한 사람도 있겠지만요.",
+      "requiredTraits": [
+        "REST",
+        "SOCIAL",
+        "FLOW"
+      ],
+      "priority": 6,
+      "stats": {
+        "연휴 생존력": 4,
+        "눈치력": 3,
+        "먹방력": 4,
+        "집안일 기여도": 2
+      },
+      "catchphrase": "자자, 다들 여기 모여봐요!",
+      "goodMatch": "sofa_director",
+      "badMatch": "dish_master",
+      "tip": "당신이 없으면 명절이 재미가 없습니다. 올해도 힘내주세요!!"
+    },
+    {
+      "id": "blanket_strategist",
+      "name": "이불 대주주",
+      "emoji": "☁️",
+      "imageUrl": "/chuseok/characters/blanket_strategist.jpg",
+      "shortDescription": "집에 돌아가면 뭐 하지? 남은 연휴 계획에만 진심",
+      "description": "명절 내내 다음 대체휴일을 계산하고, 오늘 몇 시에 뭘 하며 보낼지 정해둡니다. 사람 많은 자리에는 잠깐 얼굴만 비추고 정해진 시간에 방으로 복귀합니다. 이 사람의 연휴에는 낭비가 없습니다.",
+      "requiredTraits": [
+        "REST",
+        "SOLO",
+        "PLAN"
+      ],
+      "priority": 7,
+      "stats": {
+        "연휴 생존력": 5,
+        "눈치력": 4,
+        "먹방력": 3,
+        "집안일 기여도": 2
+      },
+      "catchphrase": "다음 대체휴일이 언제냐면요…",
+      "goodMatch": "dish_master",
+      "badMatch": "yes_fairy",
+      "tip": "계획에 없던 산책 한 번 끼워 넣기"
+    },
+    {
+      "id": "room_fossil",
+      "name": "방구석 화석",
+      "emoji": "🪨",
+      "imageUrl": "/chuseok/characters/room_fossil.jpg",
+      "shortDescription": "이불과 융합 완료. 음식 냄새에만 반응한다",
+      "description": "명절은 겨울잠 시즌입니다. 이불 밖은 위험하고, 애타게 부르는 소리는 듣지 못합니다. 하지만 전 부치는 냄새에는 0.5초 만에 일어나는 생존 본능이 있습니다. 가장 편안하게 연휴를 보내는 사람이기도 합니다.",
+      "requiredTraits": [
+        "REST",
+        "SOLO",
+        "FLOW"
+      ],
+      "priority": 8,
+      "stats": {
+        "연휴 생존력": 5,
+        "눈치력": 2,
+        "먹방력": 5,
+        "집안일 기여도": 1
+      },
+      "catchphrase": "빗소리..? 아니 이건 전이 완성되어가는 소리다!",
+      "goodMatch": "blanket_strategist",
+      "badMatch": "kitchen_commander",
+      "tip": "설거지 한 번으로 남은 명절 면죄부 얻기"
+    },
+    {
+      "id": "full_moon",
+      "name": "둥근 보름달",
+      "emoji": "🌕",
+      "imageUrl": null,
+      "shortDescription": "어느 한쪽으로 치우치지 않는 균형형",
+      "description": "돕기도 하고 쉬기도 하며, 어울리기도 하고 혼자 있기도 합니다. 어디에 있어도 잘 어우러지는 한가위의 보름달 같은 사람입니다.",
+      "requiredTraits": [],
+      "priority": 99,
+      "stats": {
+        "연휴 생존력": 4,
+        "눈치력": 4,
+        "먹방력": 4,
+        "집안일 기여도": 4
+      },
+      "catchphrase": "다 좋아요, 편하신 대로.",
+      "goodMatch": "yes_fairy",
+      "badMatch": null,
+      "tip": "이번 명절엔 내가 진짜 원하는 것 하나 고르기"
+    }
+  ]
+}

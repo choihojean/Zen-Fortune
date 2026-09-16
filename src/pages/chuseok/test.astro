@@ -1,0 +1,43 @@
+---
+import Base from '@/layouts/Base.astro';
+import ChuseokTest from '@/components/chuseok/ChuseokTest';
+import '@/styles/chuseok.css';
+import { PouchMark } from '@/components/chuseok/illustrations';
+import { chuseokContent, getPublicQuestions } from '@/lib/chuseok/content';
+import { getEventStatus } from '@/lib/chuseok/event';
+import { artwork } from '@/lib/chuseok/artwork';
+
+let testOpen = true;
+try {
+  const { readEnv } = await import('@/lib/env');
+  testOpen = getEventStatus(readEnv(Astro)).testOpen;
+} catch {
+  /* env 미설정 시에도 화면은 렌더 — 제출 API 에서 최종 판단 */
+}
+
+const restart = Astro.url.searchParams.get('restart') === '1';
+const questions = getPublicQuestions();
+
+Astro.response.headers.set('cache-control', 'no-store');
+---
+<Base title="테스트 진행 중 | 나만의 한가위 캐릭터" bodyClass="chuseok-body" ogImage="/chuseok/og/landing.jpg">
+  <main class="ch-page">
+    {testOpen ? (
+      <ChuseokTest client:load questions={questions} contentVersion={chuseokContent.version} restart={restart} loadingImage={artwork.loading} />
+    ) : (
+      <>
+        <header class="ch-topbar">
+          <a class="ch-brand" href="/chuseok">
+            <span class="ch-brand-mark"><PouchMark /></span>
+            <span class="ch-brand-name is-kr">한가위 캐릭터 테스트</span>
+          </a>
+        </header>
+        <section class="ch-empty">
+          <h1 class="ch-empty-title">테스트가 종료되었어요</h1>
+          <p class="ch-empty-text">참여해 주셔서 감사합니다.</p>
+          <a class="ch-btn ch-btn-ghost on-surface" href="/chuseok">처음으로</a>
+        </section>
+      </>
+    )}
+  </main>
+</Base>

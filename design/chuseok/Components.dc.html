@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; }
+    a { color: #ef6b4c; } a:hover { color: #b94a30; }
+  </style>
+</helmet>
+<div style="width: 900px; min-height: 1220px; box-sizing: border-box; background: #fff8ec; color: #1b2140; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; padding: 32px;">
+  <div style="grid-column: 1 / -1; display: flex; align-items: baseline; justify-content: space-between;">
+    <h1 style="margin: 0; font-family: 'Jua', 'Noto Sans KR', sans-serif; font-weight: 400; font-size: 30px;">한가위 캐릭터 테스트 · 컴포넌트 &amp; 토큰</h1>
+    <span style="font-size: 12px; color: rgba(27,33,64,0.55);">chuseok.css의 --ch-* 변수에 그대로 대입</span>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 14px;">
+    <h2 style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; color: rgba(27,33,64,0.55);">COLOR TOKENS</h2>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+      <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 48px; height: 48px; border-radius: 14px; background: #1b2140;"></span><div style="display: flex; flex-direction: column;"><b style="font-size: 13px;">--ch-bg</b><span style="font-size: 12px; color: rgba(27,33,64,0.6);">#1b2140 밤하늘</span></div></div>
+      <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 48px; height: 48px; border-radius: 14px; background: #fff3d6; border: 1px solid #e8d9b5;"></span><div style="display: flex; flex-direction: column;"><b style="font-size: 13px;">--ch-surface</b><span style="font-size: 12px; color: rgba(27,33,64,0.6);">#fff3d6 달빛 크림</span></div></div>
+      <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 48px; height: 48px; border-radius: 14px; background: #fff3d6; border: 1px solid #e8d9b5;"></span><div style="display: flex; flex-direction: column;"><b style="font-size: 13px;">--ch-ink (on bg)</b><span style="font-size: 12px; color: rgba(27,33,64,0.6);">#fff3d6 · 카드 위 #1b2140</span></div></div>
+      <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 48px; height: 48px; border-radius: 14px; background: #f4c86a;"></span><div style="display: flex; flex-direction: column;"><b style="font-size: 13px;">--ch-gold</b><span style="font-size: 12px; color: rgba(27,33,64,0.6);">#f4c86a 보름달</span></div></div>
+      <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 48px; height: 48px; border-radius: 14px; background: #ef6b4c;"></span><div style="display: flex; flex-direction: column;"><b style="font-size: 13px;">--ch-accent</b><span style="font-size: 12px; color: rgba(27,33,64,0.6);">#ef6b4c 감 · 그림자 #b94a30</span></div></div>
+      <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 48px; height: 48px; border-radius: 14px; background: #7ea77b;"></span><div style="display: flex; flex-direction: column;"><b style="font-size: 13px;">--ch-green</b><span style="font-size: 12px; color: rgba(27,33,64,0.6);">#7ea77b 쑥 · 성공/보조</span></div></div>
+      <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 48px; height: 48px; border-radius: 14px; background: rgba(255,243,214,0.08); border: 1px solid rgba(27,33,64,0.15);"></span><div style="display: flex; flex-direction: column;"><b style="font-size: 13px;">--ch-line</b><span style="font-size: 12px; color: rgba(27,33,64,0.6);">크림 8~14% 알파</span></div></div>
+      <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 48px; height: 48px; border-radius: 14px; background: #f7a99a;"></span><div style="display: flex; flex-direction: column;"><b style="font-size: 13px;">--ch-blush</b><span style="font-size: 12px; color: rgba(27,33,64,0.6);">#f7a99a 토끼 볼 · 경고 텍스트</span></div></div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 14px;">
+    <h2 style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; color: rgba(27,33,64,0.55);">TYPE</h2>
+    <div style="display: flex; flex-direction: column; gap: 10px; padding: 18px 20px; border-radius: 20px; background: #fff3d6;">
+      <span style="font-family: 'Jua', sans-serif; font-size: 42px; line-height: 50px;">Display 42 · Jua</span>
+      <span style="font-family: 'Jua', sans-serif; font-size: 27px; line-height: 37px;">질문 27 · Jua</span>
+      <span style="font-family: 'Jua', sans-serif; font-size: 19px; line-height: 26px;">버튼 19 · Jua</span>
+      <span style="font-size: 15px; line-height: 24px; font-weight: 400;">본문 15/24 · Noto Sans KR 400</span>
+      <span style="font-size: 13px; line-height: 20px; font-weight: 700;">라벨 13 · Noto Sans KR 700</span>
+      <span style="font-size: 11px; line-height: 17px; letter-spacing: 0.16em; font-weight: 700; color: rgba(27,33,64,0.6);">CAPTION 11 · 자간 0.16em</span>
+      <span style="font-size: 12px; color: rgba(27,33,64,0.55);">라운드 28px 카드 · 18px 선택지 · 999px 버튼/칩. 그림자는 흐림 없이 아래로 6~10px 단색(스티커 느낌).</span>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 14px;">
+    <h2 style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; color: rgba(27,33,64,0.55);">BUTTONS</h2>
+    <div style="display: flex; flex-direction: column; gap: 12px; padding: 20px; border-radius: 20px; background: #1b2140;">
+      <a href="#" style="display: flex; align-items: center; justify-content: center; height: 58px; border-radius: 999px; background: #ef6b4c; color: #fff8ec; font-family: 'Jua', sans-serif; font-size: 19px; text-decoration: none; box-shadow: 0 8px 0 #b94a30;">Primary · 시작/응모</a>
+      <a href="#" style="display: flex; align-items: center; justify-content: center; height: 56px; border-radius: 999px; background: #1b2140; color: #fff3d6; font-family: 'Jua', sans-serif; font-size: 18px; text-decoration: none; box-shadow: 0 6px 0 #0d1128; border: 1.5px solid rgba(255,243,214,0.2);">Dark · 밝은 카드 위 CTA</a>
+      <a href="#" style="display: flex; align-items: center; justify-content: center; height: 46px; border-radius: 999px; border: 1.5px solid rgba(255,243,214,0.3); color: #fff3d6; font-size: 13px; font-weight: 700; text-decoration: none;">Ghost · 보조 동작</a>
+      <a href="#" style="display: flex; align-items: center; justify-content: center; height: 58px; border-radius: 999px; background: #ef6b4c; color: #fff8ec; font-family: 'Jua', sans-serif; font-size: 19px; text-decoration: none; opacity: 0.45;">Disabled</a>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 14px;">
+    <h2 style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; color: rgba(27,33,64,0.55);">OPTION · CHIP · INPUT</h2>
+    <div style="display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 20px; background: #1b2140; color: #fff3d6;">
+      <div style="display: flex; align-items: center; gap: 12px; min-height: 58px; padding: 14px 16px; border-radius: 18px; background: rgba(255,243,214,0.08); border: 1.5px solid rgba(255,243,214,0.18); font-size: 15px;"><span style="width: 28px; height: 28px; border-radius: 999px; background: rgba(255,243,214,0.14); display: flex; align-items: center; justify-content: center; font-family: 'Jua', sans-serif; font-size: 13px;">A</span><span>선택지 기본</span></div>
+      <div style="display: flex; align-items: center; gap: 12px; min-height: 58px; padding: 14px 16px; border-radius: 18px; background: #ef6b4c; border: 1.5px solid #ef6b4c; color: #fff8ec; font-size: 15px; font-weight: 700; box-shadow: 0 6px 0 #b94a30;"><span style="width: 28px; height: 28px; border-radius: 999px; background: #fff8ec; color: #ef6b4c; display: flex; align-items: center; justify-content: center; font-family: 'Jua', sans-serif; font-size: 13px;">B</span><span>선택됨 (280ms 유지 후 전환)</span></div>
+      <div style="display: flex; align-items: center; gap: 12px; min-height: 58px; padding: 14px 16px; border-radius: 18px; background: rgba(255,243,214,0.08); border: 1.5px solid rgba(255,243,214,0.18); font-size: 15px; opacity: 0.4;"><span style="width: 28px; height: 28px; border-radius: 999px; background: rgba(255,243,214,0.14); display: flex; align-items: center; justify-content: center; font-family: 'Jua', sans-serif; font-size: 13px;">C</span><span>비활성 (전환 중)</span></div>
+      <div style="display: flex; gap: 6px; flex-wrap: wrap; padding-top: 4px;">
+        <span style="padding: 6px 11px; border-radius: 999px; background: #ef6b4c; color: #fff8ec; font-size: 12px; font-weight: 700;">#먹방형</span>
+        <span style="padding: 6px 11px; border-radius: 999px; background: #7ea77b; color: #fff8ec; font-size: 12px; font-weight: 700;">#휴식형</span>
+        <span style="padding: 6px 11px; border-radius: 999px; background: #f4c86a; color: #1b2140; font-size: 12px; font-weight: 700;">#계획형</span>
+        <span style="padding: 6px 11px; border-radius: 999px; background: rgba(255,243,214,0.14); color: #fff3d6; font-size: 12px; font-weight: 700;">#혼자형</span>
+      </div>
+      <div style="display: flex; align-items: center; height: 50px; padding: 0 16px; border-radius: 14px; background: #fff8ec; color: rgba(27,33,64,0.45); font-size: 15px;">입력 필드 · placeholder</div>
+      <div style="display: flex; align-items: center; height: 50px; padding: 0 16px; border-radius: 14px; background: #fff8ec; color: #1b2140; font-size: 15px; border: 2px solid #ef6b4c;">포커스 · 감색 2px</div>
+      <div style="display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 12px; font-size: 13px; padding-top: 4px;"><span>게이지 3/5</span><div style="display: flex; gap: 5px;"><span style="flex: 1; height: 12px; border-radius: 999px; background: #f4c86a;"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: #f4c86a;"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: #f4c86a;"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: rgba(255,243,214,0.14);"></span><span style="flex: 1; height: 12px; border-radius: 999px; background: rgba(255,243,214,0.14);"></span></div></div>
+    </div>
+  </section>
+
+  <section style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 10px; padding: 18px 20px; border-radius: 20px; background: #fff3d6;">
+    <h2 style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; color: rgba(27,33,64,0.55);">MOTION · 한 줄씩</h2>
+    <ul style="margin: 0; padding-left: 18px; font-size: 13px; line-height: 22px; color: rgba(27,33,64,0.8);">
+      <li>랜딩: 달 위 토끼가 4초 주기로 8px 부유. CTA는 눌렀을 때 그림자가 2px로 줄며 내려앉음.</li>
+      <li>질문: 선택지 탭 → 감색으로 채워지며 1.02배 확대, 280ms 유지 후 카드가 왼쪽으로 슬라이드 아웃, 다음 질문 슬라이드 인. 진행바 세그먼트가 금색으로 채워짐.</li>
+      <li>로딩: 토끼가 떡방아를 찧는 루프(0.9s) + 금빛 링 2겹 확산. 문구 0.9s 간격 교체.</li>
+      <li>결과: 캐릭터 카드가 0.6배·-6° 에서 튀어오르며 등장(spring). 능력치 세그먼트는 왼쪽부터 순차 채움.</li>
+      <li>응모 완료: 컨페티 조각이 카드 상단에서 한 번 흩날림. reduce-motion 시 모든 애니메이션 정지.</li>
+    </ul>
+  </section>
+</div>
+</x-dc>
+</body>
+</html>

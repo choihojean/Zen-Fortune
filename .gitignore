@@ -16,3 +16,6 @@ dist/
 .vscode/
 .idea/
 .claude/
+
+# Claude Design seeded canvas payload (re-generated from design/**/*.dc.html)
+design/**/hangawi-character-test.html

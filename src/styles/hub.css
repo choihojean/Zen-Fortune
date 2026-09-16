@@ -1,0 +1,39 @@
+/* 주니어보드 허브 (/) — 밝은 크림 톤, 이벤트 페이지 스타일과 분리 */
+.jb-hub {
+  min-height: 100vh;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 28px 24px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  font-family: var(--font-ui-kr);
+  color: #1a1612;
+}
+
+.jb-topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.jb-brand { display: inline-flex; align-items: center; gap: 8px; color: #1a1612; text-decoration: none; }
+.jb-brand-mark {
+  width: 26px; height: 26px; border-radius: 7px; background: #1a1612; color: #f4ead9;
+  font-family: var(--font-ui); font-size: 10px; font-weight: 800;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.jb-brand-name { font-family: var(--font-ui); font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }
+.jb-eyebrow { font-family: var(--font-ui); font-size: 10px; font-weight: 600; letter-spacing: 0.24em; color: #8a7454; text-transform: uppercase; }
+.jb-title { margin: 0; font-family: var(--font-quote); font-weight: 600; font-size: 28px; line-height: 38px; letter-spacing: -0.01em; word-break: keep-all; }
+.jb-lead { margin: 0; font-size: 15px; line-height: 25px; color: #6b5842; word-break: keep-all; }
+.jb-note { margin: 0; font-size: 12px; line-height: 19px; color: #a68f6e; }
+
+.jb-services { display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.jb-service {
+  display: flex; align-items: center; gap: 16px; padding: 18px 20px; border-radius: 16px;
+  border: 1px solid #eee4d0; background: #ffffff; color: #1a1612; text-decoration: none;
+  transition: border-color 0.12s ease, transform 0.12s ease;
+}
+.jb-service:hover { border-color: #1a1612; }
+.jb-service:active { transform: translateY(1px); }
+.jb-service-icon { width: 44px; height: 44px; border-radius: 12px; background: #f6ede0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #1a1612; }
+.jb-service-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.jb-service-name { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
+.jb-service-desc { font-size: 12px; color: #8a7454; word-break: keep-all; }
+.jb-service-tag { font-family: var(--font-ui); font-size: 10px; font-weight: 700; letter-spacing: 0.14em; color: #b8442f; text-transform: uppercase; }

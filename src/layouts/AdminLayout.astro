@@ -3,7 +3,7 @@ import Base from '@/layouts/Base.astro';
 
 interface Props {
   title: string;
-  active: 'overview' | 'quotes' | 'drinks';
+  active: 'overview' | 'quotes' | 'drinks' | 'chuseok';
 }
 
 const { title, active } = Astro.props;
@@ -13,6 +13,13 @@ const overviewItem = {
   href: '/admin',
   label: 'Dashboard',
   icon: 'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z',
+};
+
+const chuseokItem = {
+  key: 'chuseok' as const,
+  href: '/admin/chuseok',
+  label: 'Character Test',
+  icon: 'M12 3a9 9 0 1 0 9 9c0-1-.2-2-.5-2.9A6 6 0 0 1 12 3Z M8 14s1.5 2 4 2 4-2 4-2',
 };
 
 const zenItems: { key: Props['active']; href: string; label: string; icon: string }[] = [
@@ -47,6 +54,17 @@ const zenItems: { key: Props['active']; href: string; label: string; icon: strin
             <path d={overviewItem.icon} />
           </svg>
           <span>{overviewItem.label}</span>
+        </a>
+      </nav>
+
+      <div class="section-cap">Chuseok Event</div>
+
+      <nav class="nav">
+        <a href={chuseokItem.href} class={`nav-item${active === chuseokItem.key ? ' is-active' : ''}`}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d={chuseokItem.icon} />
+          </svg>
+          <span>{chuseokItem.label}</span>
         </a>
       </nav>
 

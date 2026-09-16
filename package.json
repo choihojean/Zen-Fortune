@@ -1,5 +1,5 @@
 {
-  "name": "zen-fortune",
+  "name": "juniorboard",
   "type": "module",
   "version": "0.1.0",
   "private": true,
@@ -9,7 +9,8 @@
     "preview": "wrangler pages dev ./dist",
     "deploy": "astro build && wrangler pages deploy ./dist",
     "astro": "astro",
-    "typecheck": "astro check"
+    "typecheck": "astro check",
+    "simulate:chuseok": "node scripts/simulate-chuseok.ts"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.2.1",

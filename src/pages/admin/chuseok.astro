@@ -1,0 +1,399 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { chuseokContent } from '@/lib/chuseok/content';
+
+const contentVersion = chuseokContent.version;
+const questionCount = chuseokContent.questions.length;
+const characterCount = chuseokContent.characters.length;
+---
+<AdminLayout title="Character Test · Junior Board Console" active="chuseok">
+  <header class="page-head">
+    <div class="head-left">
+      <div class="admin-eyebrow">
+        <span class="rule"></span>
+        <span class="label">Chuseok Event</span>
+      </div>
+      <h1 class="title">한가위 캐릭터 테스트</h1>
+      <p class="meta">
+        콘텐츠 <code>{contentVersion}</code> · 질문 {questionCount}개 · 캐릭터 {characterCount}개 ·
+        <a href="/chuseok" target="_blank" rel="noopener">이벤트 페이지 열기 ↗</a>
+      </p>
+    </div>
+    <div class="head-actions">
+      <a class="btn btn-secondary" href="/api/admin/chuseok/entries?format=csv">CSV 다운로드</a>
+      <button id="refreshBtn" class="btn btn-ghost" type="button">새로고침</button>
+    </div>
+  </header>
+
+  <section class="stats" id="statsRow" aria-busy="true">
+    <article class="stat admin-card">
+      <span class="admin-cap">테스트 완료</span>
+      <div class="stat-value" data-key="sessions_total">—</div>
+      <span class="stat-sub" data-key="sessions_today_text">오늘 — 명</span>
+    </article>
+    <article class="stat admin-card">
+      <span class="admin-cap">럭키드로우 응모</span>
+      <div class="stat-value" data-key="entries_total">—</div>
+      <span class="stat-sub" data-key="entries_rate_text">완료자 중 — %</span>
+    </article>
+    <article class="stat admin-card">
+      <span class="admin-cap">당첨</span>
+      <div class="stat-value" data-key="winners_total">—</div>
+      <span class="stat-sub" data-key="excluded_text">수동 제외 —</span>
+    </article>
+    <article class="stat admin-card is-dark">
+      <span class="admin-cap" style="color:#8a7454">응모 상태</span>
+      <div class="stat-value" data-key="draw_state" style="font-size:22px;line-height:28px;">—</div>
+      <span class="stat-sub" data-key="draw_window_text">기간 제한 없음</span>
+    </article>
+  </section>
+
+  <section class="grid">
+    <article class="admin-card">
+      <div class="card-head">
+        <div>
+          <span class="admin-cap">Character Distribution</span>
+          <h2 class="card-title">캐릭터별 결과 분포</h2>
+        </div>
+      </div>
+      <div id="charDist" class="rows"><div class="row-empty">불러오는 중…</div></div>
+    </article>
+
+    <article class="admin-card draw-card is-dark">
+      <div class="card-head" style="border-bottom-color:#2a221a;">
+        <div>
+          <span class="admin-cap" style="color:#8a7454">Lucky Draw</span>
+          <h2 class="card-title" style="color:#f4ead9;">추첨 실행</h2>
+        </div>
+      </div>
+      <div class="draw-body">
+        <p class="draw-hint">한 줄에 <b>상품명, 인원</b>. 위에서부터 순서대로 추첨하고 앞 등급 당첨자는 뒤 등급에서 제외됩니다. 이미 당첨된 사람과 제외 처리된 사람은 풀에서 빠집니다.</p>
+        <textarea id="prizeInput" class="textarea draw-textarea" rows="4">황금 송편상, 1
+보름달상, 3
+복주머니상, 10</textarea>
+        <div class="draw-actions">
+          <button id="drawBtn" class="btn btn-primary draw-btn" type="button">추첨 실행</button>
+          <button id="resetDrawBtn" class="btn btn-danger" type="button">당첨 초기화</button>
+        </div>
+        <p id="drawError" class="draw-error" role="alert"></p>
+        <div id="drawResult" class="draw-result"></div>
+      </div>
+    </article>
+  </section>
+
+  <section class="admin-card list" style="margin-top:24px;">
+    <div class="list-head">
+      <div>
+        <span class="admin-cap">Entries</span>
+        <h2 class="list-title">응모자 목록</h2>
+      </div>
+      <div class="list-tools">
+        <input id="entrySearch" class="input" type="search" placeholder="이름·이메일·캐릭터 검색" />
+        <label class="checkbox"><input type="checkbox" id="winnersOnly" /> <span>당첨자만</span></label>
+        <span class="list-count" id="entryCount">—</span>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="etable">
+        <thead>
+          <tr>
+            <th>#</th><th>이름</th><th>이메일</th><th>캐릭터</th><th>응모 시각</th><th>상태</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="entryRows">
+          <tr><td colspan="7" class="row-empty">불러오는 중…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="admin-card" style="margin-top:24px;">
+    <div class="card-head">
+      <div>
+        <span class="admin-cap">Question Insights</span>
+        <h2 class="card-title">질문별 선택 비율</h2>
+      </div>
+    </div>
+    <div id="questionDist" class="qdist"><div class="row-empty">불러오는 중…</div></div>
+  </section>
+
+  <style>
+    .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 24px; flex-wrap: wrap; }
+    .head-left { display: flex; flex-direction: column; gap: 8px; }
+    .head-actions { display: flex; gap: 10px; flex-shrink: 0; }
+    .title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 36px; line-height: 42px; color: #1a1612; letter-spacing: -0.02em; }
+    .meta { margin: 0; font-family: var(--font-ui-kr); font-size: 13px; color: #6b5842; }
+    .meta code { font-family: var(--font-ui); font-size: 11px; background: #f3ecdc; padding: 2px 6px; border-radius: 6px; }
+    .meta a { color: #8a7454; }
+
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat { padding: 22px 24px; display: flex; flex-direction: column; gap: 12px; }
+    .stat-value { font-family: var(--font-display); font-weight: 500; font-size: 40px; line-height: 40px; color: #1a1612; letter-spacing: -0.02em; }
+    .stat.is-dark .stat-value { color: #f4ead9; }
+    .stat-sub { font-family: var(--font-ui-kr); font-size: 12px; color: #8a7454; }
+    .stat.is-dark .stat-sub { color: #b8a688; }
+
+    .grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; }
+    .card-head { padding: 22px 24px 14px; border-bottom: 1px solid #f3ecdc; display: flex; align-items: center; justify-content: space-between; }
+    .card-title { margin: 4px 0 0; font-family: var(--font-display); font-weight: 500; font-size: 20px; color: #1a1612; letter-spacing: -0.01em; }
+    .rows { display: flex; flex-direction: column; }
+
+    .draw-card { display: flex; flex-direction: column; }
+    .draw-body { padding: 18px 24px 22px; display: flex; flex-direction: column; gap: 12px; }
+    .draw-hint { margin: 0; font-family: var(--font-ui-kr); font-size: 12px; line-height: 19px; color: #b8a688; }
+    .draw-hint b { color: #f4ead9; font-weight: 600; }
+    .draw-textarea { background: #2a221a; border-color: #3a3028; color: #f4ead9; font-family: var(--font-ui); min-height: 96px; }
+    .draw-actions { display: flex; gap: 10px; align-items: center; }
+    .draw-btn { background: #f4ead9; color: #1a1612; }
+    .draw-error { margin: 0; min-height: 18px; font-family: var(--font-ui-kr); font-size: 12px; color: #e6a598; }
+    .draw-result { display: flex; flex-direction: column; gap: 6px; }
+
+    .list { padding: 0; }
+    .list-head { padding: 22px 24px 14px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid #f3ecdc; flex-wrap: wrap; }
+    .list-title { margin: 4px 0 0; font-family: var(--font-display); font-weight: 500; font-size: 20px; color: #1a1612; }
+    .list-tools { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .list-tools .input { width: 240px; padding: 9px 12px; }
+    .checkbox { display: flex; align-items: center; gap: 6px; font-family: var(--font-ui-kr); font-size: 12px; color: #6b5842; cursor: pointer; }
+    .list-count { font-family: var(--font-ui); font-size: 12px; color: #8a7454; }
+    .table-wrap { overflow-x: auto; }
+    .etable { width: 100%; border-collapse: collapse; min-width: 720px; }
+    .etable th { text-align: left; padding: 12px 16px; font-family: var(--font-ui); font-size: 10px; font-weight: 600; letter-spacing: 0.18em; color: #8a7454; text-transform: uppercase; border-bottom: 1px solid #f3ecdc; }
+    .etable th:first-child { padding-left: 24px; }
+
+    .qdist { padding: 8px 24px 18px; display: flex; flex-direction: column; gap: 18px; }
+
+    @media (max-width: 1100px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <style is:global>
+    .row-empty { padding: 22px 24px; font-family: var(--font-ui-kr); font-size: 13px; color: #a68f6e; }
+
+    .dist-row { padding: 12px 24px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid #f3ecdc; }
+    .dist-row:last-child { border-bottom: 0; }
+    .dist-emoji { width: 28px; font-size: 18px; text-align: center; flex-shrink: 0; }
+    .dist-name { width: 140px; flex-shrink: 0; font-family: var(--font-ui-kr); font-size: 13px; font-weight: 500; color: #1a1612; }
+    .dist-bar { flex: 1; height: 8px; background: #f3ecdc; border-radius: 999px; overflow: hidden; }
+    .dist-fill { height: 100%; background: #1a1612; border-radius: 999px; }
+    .dist-num { width: 96px; flex-shrink: 0; text-align: right; font-family: var(--font-ui); font-size: 12px; color: #6b5842; }
+    .dist-num b { color: #1a1612; font-weight: 600; }
+
+    .etable td { padding: 12px 16px; font-family: var(--font-ui-kr); font-size: 13px; color: #1a1612; border-bottom: 1px solid #f3ecdc; vertical-align: middle; }
+    .etable td:first-child { padding-left: 24px; font-family: var(--font-ui); color: #a68f6e; font-size: 11px; }
+    .etable tr:last-child td { border-bottom: 0; }
+    .etable tr.is-excluded td { color: #a68f6e; text-decoration: line-through; }
+    .etable tr.is-excluded td:last-child, .etable tr.is-excluded td.status { text-decoration: none; }
+    .etable .email { font-family: var(--font-ui); font-size: 12px; color: #6b5842; }
+    .etable .actions { display: flex; gap: 4px; justify-content: flex-end; white-space: nowrap; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 999px; font-family: var(--font-ui); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+    .badge-win { background: #1a1612; color: #f4ead9; }
+    .badge-ex { background: #f3ecdc; color: #8a7454; }
+    .badge-ok { background: #eef5ea; color: #4c6b3f; }
+
+    .win-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; background: #2a221a; font-family: var(--font-ui-kr); font-size: 13px; color: #f4ead9; }
+    .win-row .prize { font-family: var(--font-ui); font-size: 10px; font-weight: 700; letter-spacing: 0.12em; color: #d4b88c; text-transform: uppercase; width: 90px; flex-shrink: 0; }
+    .win-row .who { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .win-row .who small { color: #8a7454; margin-left: 6px; font-family: var(--font-ui); }
+
+    .q-block { display: flex; flex-direction: column; gap: 8px; }
+    .q-title { margin: 0; font-family: var(--font-ui-kr); font-size: 14px; font-weight: 600; color: #1a1612; }
+    .q-title small { font-family: var(--font-ui); font-weight: 500; color: #a68f6e; margin-left: 8px; }
+    .q-opt { display: grid; grid-template-columns: 1fr 160px 56px; align-items: center; gap: 12px; font-family: var(--font-ui-kr); font-size: 13px; color: #6b5842; }
+    .q-opt .bar { height: 6px; background: #f3ecdc; border-radius: 999px; overflow: hidden; }
+    .q-opt .fill { height: 100%; background: #c4b49a; border-radius: 999px; }
+    .q-opt .pct { text-align: right; font-family: var(--font-ui); font-size: 11px; font-weight: 600; color: #8a7454; }
+  </style>
+
+  <script>
+    type Stats = {
+      today: string;
+      contentVersion: string;
+      event: { drawState: 'open' | 'not_started' | 'ended'; drawOpensAt: string | null; drawClosesAt: string | null; testOpen: boolean };
+      sessions: { total: number; today: number };
+      entries: { total: number; winners: number; excluded: number };
+      characters: { id: string; name: string; emoji: string; count: number }[];
+      questions: { id: string; text: string; total: number; options: { id: string; text: string; count: number }[] }[];
+    };
+    type Entry = {
+      id: number; employee_name: string; employee_email: string; character_id: string; character_name: string;
+      entered_at: string; is_winner: boolean; prize: string | null; drawn_at: string | null; is_excluded: boolean; note: string | null;
+    };
+
+    let entries: Entry[] = [];
+
+    const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>
+    )[c] || c);
+    const setText = (key: string, v: string | number) =>
+      document.querySelectorAll<HTMLElement>(`[data-key="${key}"]`).forEach((el) => (el.textContent = String(v)));
+    const fmt = (iso: string | null) => iso
+      ? new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(iso))
+      : '';
+
+    async function loadStats() {
+      const res = await fetch('/api/admin/chuseok/stats', { cache: 'no-store' });
+      if (!res.ok) throw new Error(await res.text());
+      const d = (await res.json()) as Stats;
+
+      setText('sessions_total', d.sessions.total.toLocaleString());
+      setText('sessions_today_text', `오늘 ${d.sessions.today.toLocaleString()}명 완료`);
+      setText('entries_total', d.entries.total.toLocaleString());
+      const rate = d.sessions.total ? Math.round((d.entries.total / d.sessions.total) * 100) : 0;
+      setText('entries_rate_text', `완료자 중 ${rate}% 응모`);
+      setText('winners_total', d.entries.winners.toLocaleString());
+      setText('excluded_text', d.entries.excluded ? `수동 제외 ${d.entries.excluded}명` : '수동 제외 없음');
+      const stateLabel = { open: '응모 진행 중', not_started: '응모 대기', ended: '응모 마감' }[d.event.drawState];
+      setText('draw_state', d.event.testOpen ? stateLabel : `${stateLabel} · 테스트 종료`);
+      const win = [d.event.drawOpensAt ? `시작 ${fmt(d.event.drawOpensAt)}` : null, d.event.drawClosesAt ? `마감 ${fmt(d.event.drawClosesAt)}` : null].filter(Boolean).join(' · ');
+      setText('draw_window_text', win || '기간 제한 없음 (CHUSEOK_DRAW_* 환경변수)');
+
+      const dist = document.getElementById('charDist')!;
+      const max = Math.max(1, ...d.characters.map((c) => c.count));
+      const total = Math.max(1, d.sessions.total);
+      dist.innerHTML = d.characters.length === 0
+        ? '<div class="row-empty">아직 결과가 없어요.</div>'
+        : d.characters.map((c) => `
+          <div class="dist-row">
+            <span class="dist-emoji">${esc(c.emoji)}</span>
+            <span class="dist-name">${esc(c.name)}</span>
+            <div class="dist-bar"><div class="dist-fill" style="width:${Math.round((c.count / max) * 100)}%"></div></div>
+            <span class="dist-num"><b>${c.count.toLocaleString()}</b> · ${Math.round((c.count / total) * 100)}%</span>
+          </div>`).join('');
+
+      const qd = document.getElementById('questionDist')!;
+      qd.innerHTML = d.questions.map((q) => `
+        <div class="q-block">
+          <p class="q-title">${esc(q.text)}<small>${q.total.toLocaleString()}명</small></p>
+          ${q.options.map((o) => {
+            const pct = q.total ? Math.round((o.count / q.total) * 100) : 0;
+            return `<div class="q-opt"><span>${esc(o.text)}</span><div class="bar"><div class="fill" style="width:${pct}%"></div></div><span class="pct">${pct}%</span></div>`;
+          }).join('')}
+        </div>`).join('');
+
+      document.getElementById('statsRow')?.removeAttribute('aria-busy');
+    }
+
+    async function loadEntries() {
+      const res = await fetch('/api/admin/chuseok/entries', { cache: 'no-store' });
+      if (!res.ok) throw new Error(await res.text());
+      entries = ((await res.json()) as { entries: Entry[] }).entries;
+      renderEntries();
+    }
+
+    function renderEntries() {
+      const q = (document.getElementById('entrySearch') as HTMLInputElement).value.trim().toLowerCase();
+      const winnersOnly = (document.getElementById('winnersOnly') as HTMLInputElement).checked;
+      const list = entries.filter((e) => {
+        if (winnersOnly && !e.is_winner) return false;
+        if (!q) return true;
+        return [e.employee_name, e.employee_email, e.character_name, e.prize ?? ''].some((v) => v.toLowerCase().includes(q));
+      });
+      document.getElementById('entryCount')!.textContent = `${list.length} / ${entries.length}명`;
+      const tbody = document.getElementById('entryRows')!;
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="row-empty">표시할 응모가 없어요.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = list.map((e) => {
+        const status = e.is_winner
+          ? `<span class="badge badge-win">🎁 ${esc(e.prize ?? '당첨')}</span>`
+          : e.is_excluded ? '<span class="badge badge-ex">제외</span>' : '<span class="badge badge-ok">응모</span>';
+        return `
+          <tr data-id="${e.id}" class="${e.is_excluded ? 'is-excluded' : ''}">
+            <td>${e.id}</td>
+            <td>${esc(e.employee_name)}</td>
+            <td class="email">${esc(e.employee_email)}</td>
+            <td>${esc(e.character_name)}</td>
+            <td>${fmt(e.entered_at)}</td>
+            <td class="status">${status}</td>
+            <td class="actions">
+              <button class="btn btn-ghost" data-action="exclude" type="button">${e.is_excluded ? '제외 해제' : '제외'}</button>
+              <button class="btn btn-danger" data-action="delete" type="button">삭제</button>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    async function refreshAll() {
+      try {
+        await Promise.all([loadStats(), loadEntries()]);
+      } catch (err) {
+        console.error(err);
+        document.getElementById('charDist')!.innerHTML = '<div class="row-empty">불러오지 못했어요. DB 스키마(supabase/chuseok_schema.sql)가 적용되었는지 확인해 주세요.</div>';
+      }
+    }
+
+    document.getElementById('entryRows')!.addEventListener('click', async (ev) => {
+      const btn = (ev.target as HTMLElement).closest<HTMLButtonElement>('button[data-action]');
+      if (!btn) return;
+      const tr = btn.closest<HTMLTableRowElement>('tr[data-id]')!;
+      const id = Number(tr.dataset.id);
+      const entry = entries.find((e) => e.id === id);
+      if (!entry) return;
+
+      if (btn.dataset.action === 'exclude') {
+        btn.disabled = true;
+        const res = await fetch(`/api/admin/chuseok/entries/${id}`, {
+          method: 'PATCH', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ is_excluded: !entry.is_excluded }),
+        });
+        if (!res.ok) alert('변경에 실패했어요.');
+        await refreshAll();
+      }
+      if (btn.dataset.action === 'delete') {
+        if (!confirm(`${entry.employee_name} (${entry.employee_email}) 응모를 삭제할까요?\n삭제하면 같은 이메일로 다시 응모할 수 있게 됩니다.`)) return;
+        const res = await fetch(`/api/admin/chuseok/entries/${id}`, { method: 'DELETE' });
+        if (!res.ok) alert('삭제에 실패했어요.');
+        await refreshAll();
+      }
+    });
+
+    document.getElementById('entrySearch')!.addEventListener('input', renderEntries);
+    document.getElementById('winnersOnly')!.addEventListener('change', renderEntries);
+    document.getElementById('refreshBtn')!.addEventListener('click', refreshAll);
+
+    function parsePrizes(text: string) {
+      return text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).map((l) => {
+        const [name, count] = l.split(/[,\t]/).map((s) => s.trim());
+        return { name, count: Number(count) };
+      });
+    }
+
+    document.getElementById('drawBtn')!.addEventListener('click', async () => {
+      const errEl = document.getElementById('drawError')!;
+      const out = document.getElementById('drawResult')!;
+      const btn = document.getElementById('drawBtn') as HTMLButtonElement;
+      errEl.textContent = '';
+      const prizes = parsePrizes((document.getElementById('prizeInput') as HTMLTextAreaElement).value);
+      const total = prizes.reduce((s, p) => s + (p.count || 0), 0);
+      if (!confirm(`총 ${total}명을 추첨합니다. 이미 당첨된 사람은 제외되고 결과는 즉시 저장됩니다. 진행할까요?`)) return;
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/admin/chuseok/draw', {
+          method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ prizes }),
+        });
+        const data = await res.json() as { error?: string; winners?: { employee_name: string; employee_email: string; character_name: string; prize: string }[]; poolSize?: number; shortfall?: number };
+        if (!res.ok) throw new Error(data.error || '추첨 실패');
+        out.innerHTML = `<p class="draw-hint">풀 ${data.poolSize}명 중 ${data.winners!.length}명 당첨${data.shortfall ? ` · 인원 부족 ${data.shortfall}명` : ''}</p>` +
+          data.winners!.map((w) => `<div class="win-row"><span class="prize">${esc(w.prize)}</span><span class="who">${esc(w.employee_name)}<small>${esc(w.employee_email)} · ${esc(w.character_name)}</small></span></div>`).join('');
+        await refreshAll();
+      } catch (err: any) {
+        errEl.textContent = err.message;
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    document.getElementById('resetDrawBtn')!.addEventListener('click', async () => {
+      if (!confirm('모든 당첨 결과를 초기화할까요? 되돌릴 수 없습니다.')) return;
+      const res = await fetch('/api/admin/chuseok/draw', { method: 'DELETE' });
+      if (!res.ok) alert('초기화에 실패했어요.');
+      document.getElementById('drawResult')!.innerHTML = '';
+      await refreshAll();
+    });
+
+    refreshAll();
+  </script>
+</AdminLayout>

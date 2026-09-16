@@ -1,0 +1,235 @@
+---
+import Base from '@/layouts/Base.astro';
+import EntryForm from '@/components/chuseok/EntryForm';
+import '@/styles/chuseok.css';
+import { PouchMark, PuzzledMoon } from '@/components/chuseok/illustrations';
+import { readEnv } from '@/lib/env';
+import { createServerClient } from '@/lib/supabase';
+import { getCharacter, getFallbackCharacter } from '@/lib/chuseok/content';
+import { formatKST, getEventStatus } from '@/lib/chuseok/event';
+import { isUuid } from '@/lib/chuseok/validation';
+import type { Character } from '@/lib/chuseok/types';
+
+Astro.response.headers.set('cache-control', 'no-store');
+
+const id = Astro.params.id ?? '';
+let character: Character | null = null;
+let alreadyEntered = false;
+let notFound = false;
+let loadError = false;
+let status = getEventStatus({});
+
+if (!isUuid(id)) {
+  notFound = true;
+} else {
+  try {
+    const env = readEnv(Astro);
+    status = getEventStatus(env);
+    const sb = createServerClient(env);
+    const [{ data: session }, { data: entry }] = await Promise.all([
+      sb.from('chuseok_sessions').select('id, character_id').eq('id', id).maybeSingle(),
+      sb.from('chuseok_entries').select('id').eq('session_id', id).maybeSingle(),
+    ]);
+    if (!session) {
+      notFound = true;
+    } else {
+      // 매칭 실패·콘텐츠 교체로 id 가 사라진 경우에도 빈 화면은 보여주지 않는다.
+      character = getCharacter(session.character_id) ?? getFallbackCharacter();
+      alreadyEntered = !!entry;
+    }
+  } catch (err) {
+    console.error('[chuseok:result]', err);
+    loadError = true;
+  }
+}
+
+if (notFound) Astro.response.headers.set('x-robots-tag', 'noindex');
+
+const goodMatch = character?.goodMatch ? getCharacter(character.goodMatch) : null;
+const badMatch = character?.badMatch ? getCharacter(character.badMatch) : null;
+const matches = [
+  goodMatch && { key: 'good', tone: 'green', label: '잘 맞는 캐릭터', tag: '잘 맞아요', c: goodMatch },
+  badMatch && { key: 'bad', tone: 'accent', label: '주의할 캐릭터', tag: '조심하세요', c: badMatch },
+].filter(Boolean) as { key: string; tone: 'green' | 'accent'; label: string; tag: string; c: Character }[];
+const statEntries = character ? Object.entries(character.stats ?? {}) : [];
+const pageTitle = character ? `${character.name} | 나만의 한가위 캐릭터` : '결과 | 나만의 한가위 캐릭터';
+const ogDescription = character
+  ? `${character.shortDescription} · 나도 테스트하고 럭키드로우 응모하기`
+  : '몇 가지 질문에 답하고 나만의 한가위 캐릭터를 확인해 보세요.';
+// 공유 썸네일은 256px 축소본(/chuseok/og/…)을 쓴다.
+const ogImage = character?.imageUrl ? character.imageUrl.replace('/chuseok/characters/', '/chuseok/og/') : '/chuseok/og/pouch.jpg';
+---
+<Base title={pageTitle} description={ogDescription} bodyClass="chuseok-body" ogImage={ogImage} ogImageAlt={character ? `${character.name} 캐릭터 이미지` : undefined}>
+  <main class="ch-page">
+    <div class="ch-stars" aria-hidden="true"></div>
+
+    <header class="ch-topbar">
+      <a class="ch-brand" href="/chuseok">
+        <span class="ch-brand-mark"><PouchMark /></span>
+        <span class="ch-brand-name is-kr">한가위 캐릭터 테스트</span>
+      </a>
+    </header>
+
+    {notFound && (
+      <section class="ch-empty">
+        <PuzzledMoon />
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <h1 class="ch-empty-title">어라, 결과가 사라졌어요</h1>
+          <p class="ch-empty-text">링크가 잘못됐거나 만료된 결과예요. 4분이면 다시 만날 수 있어요.</p>
+        </div>
+        <a class="ch-btn ch-btn-primary" href="/chuseok/test?restart=1">테스트 다시 하기</a>
+      </section>
+    )}
+
+    {loadError && !notFound && (
+      <section class="ch-empty">
+        <PuzzledMoon />
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <h1 class="ch-empty-title">잠깐, 달이 구름에 가렸어요</h1>
+          <p class="ch-empty-text">결과를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.</p>
+        </div>
+        <a class="ch-btn ch-btn-dark" href={`/chuseok/result/${id}`}>다시 시도</a>
+      </section>
+    )}
+
+    {character && (
+      <>
+        <section class="ch-hero">
+          <span class="ch-hero-tag">당신의 한가위 캐릭터는</span>
+          <div class="ch-hero-visual" aria-hidden={character.imageUrl ? undefined : 'true'}>
+            {character.imageUrl ? (
+              <img src={character.imageUrl} alt={`${character.name} 캐릭터 이미지`} />
+            ) : (
+              <span>{character.emoji}</span>
+            )}
+          </div>
+          <h1 class="ch-hero-name">{character.name}</h1>
+          <p class="ch-hero-short">{character.shortDescription}</p>
+          {character.catchphrase && (
+            <p class="ch-hero-quote">“{character.catchphrase}”</p>
+          )}
+        </section>
+
+        <section class="ch-panel">
+          <p class="ch-panel-cap">이런 사람이에요</p>
+          <p class="ch-desc">{character.description}</p>
+        </section>
+
+        {statEntries.length > 0 && (
+          <section class="ch-panel">
+            <p class="ch-panel-cap">능력치</p>
+            <ul class="ch-stats">
+              {statEntries.map(([label, value]) => {
+                const n = Math.max(0, Math.min(5, Math.round(Number(value))));
+                return (
+                  <li class={`ch-stat${n >= 5 ? ' is-max' : ''}`}>
+                    <span>{label}</span>
+                    <div class="ch-stat-segs" role="img" aria-label={`${label} ${n} / 5`}>
+                      {[1, 2, 3, 4, 5].map((i) => <span class={`ch-stat-seg${i <= n ? ' is-on' : ''}`}></span>)}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )}
+
+        <section class="ch-facts" aria-label="재미로 보는 특징" style="grid-template-columns:1fr;">
+          {matches.map((m) => (
+            <button type="button" class={`ch-match is-${m.tone}`} data-dialog={`dlg-${m.key}`} aria-haspopup="dialog">
+              <span class="ch-match-visual" aria-hidden="true">
+                {m.c.imageUrl ? <img src={m.c.imageUrl} alt="" loading="lazy" /> : <span>{m.c.emoji}</span>}
+              </span>
+              <span class="ch-match-body">
+                <span class="k">{m.label}</span>
+                <span class="v">{m.c.name}</span>
+                <span class="s">{m.c.shortDescription}</span>
+              </span>
+              <svg class="ch-match-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+            </button>
+          ))}
+          {character.tip && (
+            <div class="ch-fact is-wide is-row">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f4c86a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/><path d="M9 21h6M10 17v2M14 17v2"/></svg>
+              <div style="display:flex;flex-direction:column;gap:2px;">
+                <span class="k">이번 명절 추천 행동</span>
+                <span class="v">{character.tip}</span>
+              </div>
+            </div>
+          )}
+        </section>
+
+        <EntryForm
+          client:load
+          sessionId={id}
+          alreadyEntered={alreadyEntered}
+          drawState={status.drawState}
+          drawOpensAtLabel={formatKST(status.drawOpensAt)}
+          drawClosesAtLabel={formatKST(status.drawClosesAt)}
+        />
+
+        <div class="ch-actions">
+          <div class="ch-actions-row">
+            <button id="copyLink" type="button" class="ch-btn ch-btn-ghost">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+              <span>결과 링크 복사</span>
+            </button>
+            <a class="ch-btn ch-btn-ghost" href="/chuseok/test?restart=1">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+              <span>다시 해보기</span>
+            </a>
+          </div>
+          <p class="ch-note">테스트는 몇 번이든 OK. 럭키드로우는 처음 응모한 결과로 한 번만 남아요.</p>
+        </div>
+
+        {matches.map((m) => (
+          <dialog class="ch-dialog" id={`dlg-${m.key}`} aria-labelledby={`dlg-${m.key}-name`}>
+            <div class="ch-dialog-card">
+              <button type="button" class="ch-dialog-close" data-close aria-label="닫기">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+              </button>
+              <span class={`ch-dialog-tag is-${m.tone}`}>{m.tag}</span>
+              <div class="ch-dialog-visual" aria-hidden="true">
+                {m.c.imageUrl ? <img src={m.c.imageUrl} alt="" loading="lazy" /> : <span>{m.c.emoji}</span>}
+              </div>
+              <h2 class="ch-dialog-name" id={`dlg-${m.key}-name`}>{m.c.name}</h2>
+              <p class="ch-dialog-short">{m.c.shortDescription}</p>
+              <p class="ch-dialog-desc">{m.c.description}</p>
+              {m.c.catchphrase && <div class="ch-dialog-quote">“{m.c.catchphrase}”</div>}
+            </div>
+          </dialog>
+        ))}
+      </>
+    )}
+  </main>
+
+  <script>
+    document.querySelectorAll<HTMLButtonElement>('button[data-dialog]').forEach((b) => {
+      b.addEventListener('click', () => {
+        const d = document.getElementById(b.dataset.dialog!) as HTMLDialogElement | null;
+        d?.showModal();
+      });
+    });
+    document.querySelectorAll<HTMLDialogElement>('dialog.ch-dialog').forEach((d) => {
+      d.querySelector('[data-close]')?.addEventListener('click', () => d.close());
+      d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
+    });
+
+    const btn = document.getElementById('copyLink');
+    const label = btn?.querySelector('span');
+    btn?.addEventListener('click', async () => {
+      if (!label) return;
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        label.textContent = '복사되었어요!';
+        setTimeout(() => (label.textContent = '결과 링크 복사'), 1600);
+      } catch {
+        label.textContent = '주소창의 링크를 복사해 주세요';
+      }
+    });
+    try {
+      const m = window.location.pathname.match(/\/chuseok\/result\/([0-9a-f-]{36})/i);
+      if (m && document.querySelector('.ch-hero-name')) localStorage.setItem('jb-chuseok-last-result', m[1]);
+    } catch {}
+  </script>
+</Base>

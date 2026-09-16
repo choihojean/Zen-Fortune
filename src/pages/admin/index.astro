@@ -14,7 +14,7 @@ const hour = Number(
 );
 const greeting = hour < 5 ? 'Good night' : hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
 ---
-<AdminLayout title="Overview · Admin · Roastery Zen" active="overview">
+<AdminLayout title="Overview · Junior Board Console" active="overview">
   <header class="page-head">
     <div class="head-left">
       <div class="admin-eyebrow">
@@ -106,6 +106,21 @@ const greeting = hour < 5 ? 'Good night' : hour < 12 ? 'Good morning' : hour < 1
           <div class="today-num" data-key="quotes_active_today">—</div>
           <div class="today-label">Active</div>
         </div>
+      </div>
+    </article>
+
+    <article class="admin-card chuseok-card">
+      <div class="card-head">
+        <div>
+          <span class="admin-cap">Chuseok Event</span>
+          <h2 class="card-title">한가위 캐릭터 테스트</h2>
+        </div>
+        <a href="/admin/chuseok" class="btn btn-secondary" style="padding:8px 12px;font-size:11px;">관리 →</a>
+      </div>
+      <div class="chuseok-nums">
+        <div><div class="chuseok-num" data-key="ch_sessions">—</div><div class="chuseok-label">테스트 완료</div></div>
+        <div><div class="chuseok-num" data-key="ch_entries">—</div><div class="chuseok-label">응모</div></div>
+        <div><div class="chuseok-num" data-key="ch_today">—</div><div class="chuseok-label">오늘</div></div>
       </div>
     </article>
 
@@ -329,6 +344,19 @@ const greeting = hour < 5 ? 'Good night' : hour < 12 ? 'Good morning' : hour < 1
       text-transform: uppercase;
     }
 
+    .chuseok-card {
+      padding: 22px 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .chuseok-card .card-head { padding: 0 0 6px; border-bottom: 0; }
+    .chuseok-nums { display: flex; gap: 14px; }
+    .chuseok-nums > div { flex: 1; padding-left: 14px; border-left: 1px solid #f3ecdc; }
+    .chuseok-nums > div:first-child { padding-left: 0; border-left: 0; }
+    .chuseok-num { font-family: var(--font-display); font-weight: 500; font-size: 24px; color: #1a1612; }
+    .chuseok-label { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.18em; color: #8a7454; text-transform: uppercase; }
+
     .drink-pool {
       padding: 22px 22px 18px;
       display: flex;
@@ -547,6 +575,21 @@ const greeting = hour < 5 ? 'Good night' : hour < 12 ? 'Good morning' : hour < 1
       )[c] || c);
     }
 
+    async function loadChuseok() {
+      try {
+        const res = await fetch('/api/admin/chuseok/stats', { cache: 'no-store' });
+        if (!res.ok) throw new Error(await res.text());
+        const d = (await res.json()) as { sessions: { total: number; today: number }; entries: { total: number } };
+        setText('ch_sessions', d.sessions.total.toLocaleString());
+        setText('ch_entries', d.entries.total.toLocaleString());
+        setText('ch_today', d.sessions.today.toLocaleString());
+      } catch (err) {
+        console.error(err);
+        setText('ch_sessions', '–');
+      }
+    }
+
     load();
+    loadChuseok();
   </script>
 </AdminLayout>

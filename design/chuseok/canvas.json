@@ -1,0 +1,108 @@
+{
+  "artboards": [
+    {
+      "file": "Landing.dc.html",
+      "title": "1 · 랜딩",
+      "x": 0,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "page": "page-1"
+    },
+    {
+      "file": "Question.dc.html",
+      "title": "2 · 질문",
+      "x": 480,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "page": "page-1"
+    },
+    {
+      "file": "Loading.dc.html",
+      "title": "3 · 로딩",
+      "x": 960,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "page": "page-1"
+    },
+    {
+      "file": "Main.dc.html",
+      "title": "4 · 결과 + 응모",
+      "x": 1440,
+      "y": 0,
+      "w": 390,
+      "h": 1720,
+      "page": "page-1"
+    },
+    {
+      "file": "States.dc.html",
+      "title": "5 · 상태 변형",
+      "x": 1920,
+      "y": 0,
+      "w": 390,
+      "h": 1100,
+      "page": "page-1"
+    },
+    {
+      "file": "Components.dc.html",
+      "title": "컴포넌트 · 토큰 · 모션",
+      "x": 0,
+      "y": 1720,
+      "w": 900,
+      "h": 1220,
+      "page": "page-1"
+    },
+    {
+      "file": "DirectionB.dc.html",
+      "title": "대안 B · 낮의 종이 스티커 (저해상도)",
+      "x": 0,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "page": "page-2"
+    },
+    {
+      "file": "DirectionC.dc.html",
+      "title": "대안 C · 오방색 볼드 민화 (저해상도)",
+      "x": 480,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "page": "page-2"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "brief",
+      "x": 0,
+      "y": -170,
+      "w": 460,
+      "text": "확정: 방향 A · 보름달 밤하늘\n네이비 #1b2140 + 달빛 크림 #fff3d6 + 감색 #ef6b4c 포인트, Jua + Noto Sans KR.\n이 5개 화면 기준으로 코드(src/styles/chuseok.css 외)에 반영됨. 캐릭터 일러스트는 토끼 placeholder(정방형 200px).",
+      "page": "page-1"
+    },
+    {
+      "id": "alts",
+      "x": 0,
+      "y": -150,
+      "w": 460,
+      "text": "검토용으로 그렸던 대안. A 방향으로 확정되어 보관만 합니다.",
+      "page": "page-2"
+    }
+  ],
+  "launch": {
+    "view": "canvas",
+    "page": "page-1"
+  },
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "방향 A · 화면"
+    },
+    {
+      "id": "page-2",
+      "name": "검토했던 대안 B·C"
+    }
+  ]
+}

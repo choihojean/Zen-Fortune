@@ -1,4 +1,4 @@
-name = "zen-fortune"
+name = "juniorboard"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = "./dist"
@@ -9,3 +9,8 @@ pages_build_output_dir = "./dist"
 #   SUPABASE_SERVICE_ROLE_KEY
 #   ADMIN_PASSWORD
 #   SESSION_SECRET
+#
+# Optional (한가위 이벤트 운영 기간):
+#   CHUSEOK_DRAW_OPENS_AT   e.g. 2026-09-21T00:00:00+09:00
+#   CHUSEOK_DRAW_CLOSES_AT  e.g. 2026-09-30T23:59:59+09:00
+#   CHUSEOK_TEST_CLOSED     "true" to close the test itself
