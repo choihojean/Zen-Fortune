@@ -22,7 +22,8 @@ const {
 } = Astro.props;
 const faviconType = favicon.endsWith('.svg') ? 'image/svg+xml' : 'image/png';
 // 공유 미리보기(Slack·카카오·iMessage). 절대 URL 이어야 하므로 요청 origin 기준으로 만든다.
-const pageUrl = new URL(Astro.url.pathname, Astro.url.origin).toString();
+// og:url 은 Slack 등이 미리보기 캐시 키로 쓰므로 쿼리까지 그대로 둔다 (?v=2 로 캐시 우회가 되게).
+const pageUrl = new URL(Astro.url.pathname + Astro.url.search, Astro.url.origin).toString();
 const ogImageUrl = ogImage ? new URL(ogImage, Astro.url.origin).toString() : null;
 ---
 <!doctype html>
