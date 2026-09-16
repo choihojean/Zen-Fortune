@@ -205,7 +205,8 @@ html:has(.chuseok-body) { background: var(--ch-bg); }
   transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
   -webkit-tap-highlight-color: transparent;
 }
-.ch-option:hover { border-color: rgba(255, 243, 214, 0.45); }
+@media (hover: hover) { .ch-option:hover { border-color: rgba(255, 243, 214, 0.45); } }
+.ch-option:focus:not(:focus-visible) { outline: none; }
 .ch-option:focus-visible { outline: 2px solid var(--ch-gold); outline-offset: 2px; }
 .ch-option:disabled { cursor: default; }
 .ch-option-key {
@@ -343,9 +344,10 @@ html:has(.chuseok-body) { background: var(--ch-bg); }
 .ch-match.is-accent { background: rgba(239, 107, 76, 0.16); border: 1px solid rgba(239, 107, 76, 0.4); }
 .ch-match.is-accent .k { color: var(--ch-blush); }
 
+.ch-page > .ch-dialog,
 .ch-dialog {
-  border: 0; padding: 0; background: transparent; max-width: min(92vw, 420px); width: 100%;
-  margin: auto; color: var(--ch-ink-on-surface);
+  position: fixed; inset: 0; border: 0; padding: 0; background: transparent; max-width: min(92vw, 420px); width: 100%;
+  max-height: 90vh; overflow: auto; margin: auto; color: var(--ch-ink-on-surface);
 }
 .ch-dialog::backdrop { background: rgba(10, 12, 30, 0.72); backdrop-filter: blur(4px); }
 .ch-dialog[open] .ch-dialog-card { animation: ch-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both; }

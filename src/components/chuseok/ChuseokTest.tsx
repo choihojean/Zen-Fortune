@@ -183,6 +183,8 @@ export default function ChuseokTest({ questions, contentVersion, restart = false
         window.setTimeout(() => {
           setFlash(null);
           setProgress(next);
+          // 모바일에서 탭한 버튼의 focus/hover 상태가 다음 문항의 같은 자리 버튼에 남지 않도록 해제
+          (document.activeElement as HTMLElement | null)?.blur?.();
           if (isLast) submit(next);
         }, SELECT_FLASH_MS)
       );
@@ -298,7 +300,6 @@ export default function ChuseokTest({ questions, contentVersion, restart = false
         <span className="ch-qbadge" aria-hidden="true">Q{progress.index + 1}</span>
         <span className="ch-qface"><MoonFace /></span>
         <h1 className="ch-question" id="ch-question">{current.text}</h1>
-        <p className="ch-qsub">솔직하게, 진짜 나라면?</p>
       </section>
 
       <ul className="ch-options" role="group" aria-labelledby="ch-question">
