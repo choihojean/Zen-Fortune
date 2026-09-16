@@ -22,6 +22,7 @@ const characterCount = chuseokContent.characters.length;
     <div class="head-actions">
       <a class="btn btn-secondary" href="/api/admin/chuseok/entries?format=csv">CSV 다운로드</a>
       <button id="refreshBtn" class="btn btn-ghost" type="button">새로고침</button>
+      <button id="resetAllBtn" class="btn btn-danger" type="button" title="테스트 세션과 응모를 모두 삭제">전체 초기화</button>
     </div>
   </header>
 
@@ -384,6 +385,19 @@ const characterCount = chuseokContent.characters.length;
       } finally {
         btn.disabled = false;
       }
+    });
+
+    document.getElementById('resetAllBtn')!.addEventListener('click', async () => {
+      const typed = prompt('테스트 결과와 럭키드로우 응모를 모두 삭제합니다. 되돌릴 수 없습니다.\n계속하려면 "초기화" 를 입력하세요.');
+      if (typed === null) return;
+      const res = await fetch('/api/admin/chuseok/reset', {
+        method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ confirm: typed.trim() }),
+      });
+      const data = await res.json().catch(() => ({})) as { error?: string; deleted?: { entries: number; sessions: number } };
+      if (!res.ok) { alert(data.error || '초기화에 실패했어요.'); return; }
+      alert(`삭제 완료 · 응모 ${data.deleted?.entries ?? 0}건, 테스트 ${data.deleted?.sessions ?? 0}건`);
+      document.getElementById('drawResult')!.innerHTML = '';
+      await refreshAll();
     });
 
     document.getElementById('resetDrawBtn')!.addEventListener('click', async () => {
