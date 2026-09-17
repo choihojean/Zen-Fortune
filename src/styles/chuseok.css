@@ -109,8 +109,8 @@ html:has(.chuseok-body) { background: var(--ch-bg); }
 }
 .ch-illust svg, .ch-illust-img { position: relative; animation: ch-float 4s ease-in-out infinite; }
 .ch-illust-img {
-  width: 250px; height: 250px; display: block; object-fit: cover; border-radius: 999px;
-  background: var(--ch-bg); box-shadow: 0 0 0 5px var(--ch-gold), 0 14px 40px rgba(244, 200, 106, 0.25);
+  width: 230px; height: 230px; display: block; object-fit: cover; border-radius: 999px;
+  background: var(--ch-surface); box-shadow: 0 10px 0 var(--ch-gold-deep), 0 0 0 6px var(--ch-gold);
 }
 
 /* ── 메타 카드 3개 ───────────────────── */
