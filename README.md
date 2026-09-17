@@ -50,7 +50,7 @@ supabase/schema.sql · supabase/chuseok_schema.sql
 질문/캐릭터는 코드에 없고 `src/data/chuseok/*.json` 에만 있다.
 
 1. `characters.json` 의 `traits` 에 성향을 정의한다 (id 는 대문자 영문). 현재는 3축 6개: HANDS↔REST, SOCIAL↔SOLO, PLAN↔FLOW.
-2. `questions.json` 에 질문을 넣는다. 선택지 수는 질문마다 달라도 되고, 각 선택지 `tags` 에 **서로 다른 축**의 성향 id 2개. 12개 축 조합이 고르게 나오도록 배치하면 축이 독립적으로 갈린다.
+2. `questions.json` 에 질문을 넣는다. **문항마다 축 2개를 고르고, 보기 4개를 (A+,B+)(A+,B−)(A−,B+)(A−,B−) 조합으로 태그**한다. 어떤 보기를 골라도 양쪽이 같은 수로 노출되어 문항 자체가 한쪽으로 밀지 않는다. 축마다 대표 문항 하나에는 그 축 태그를 두 번 넣어(2점) 축 총점을 홀수로 만들면 동점이 사라진다 (현재 q4 손, q8 사람, q10 머리).
 3. `characters.json` 의 `characters[]` 에 캐릭터를 넣고 `requiredTraits` 에 축마다 하나씩(3개) 준다. 세 성향 점수 합이 최대인 캐릭터 = 축별 다수결이므로 2×2×2 = 8종이 된다.
    - `imageUrl` 이 `null` 이면 결과 화면은 `emoji` 타일을 보여준다. 이미지는 `public/chuseok/characters/` 에 넣고 경로만 채우면 된다.
    - `fallbackCharacterId` 는 매칭 실패 시 보여줄 캐릭터 (`requiredTraits: []`).
@@ -60,7 +60,7 @@ supabase/schema.sql · supabase/chuseok_schema.sql
 npm run simulate:chuseok
 ```
 
-캐릭터 비중이 대략 5~20% 안에 들면 OK. 치우치면 출력 끝의 "태그 쌍 동시 출현" 표를 보고 적게 나온 축 조합에 선택지를 재배치한다.
+균등 응답에서 8종이 12~13% 로 같아야 정상. 실제 참여자 분포는 `/api/admin/chuseok/stats` 의 보기별 count 를 `weights.json` 으로 넣어 `node scripts/simulate-chuseok.ts 100000 weights.json` 으로 재현할 수 있다.
 
 매칭 규칙 (`lib/chuseok/scoring.ts`): 선택한 태그를 집계 → 캐릭터별 `requiredTraits` 점수 합(affinity)이 가장 높은 캐릭터 → 동점이면 상위 3 성향과의 겹침 → 답변 조합 해시 → priority → id. 같은 답변은 항상 같은 캐릭터.
 

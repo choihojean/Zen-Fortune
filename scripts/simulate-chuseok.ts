@@ -1,7 +1,9 @@
 /**
  * 결과 분포 시뮬레이션 (기획서 §15).
- *   node scripts/simulate-chuseok.ts [iterations]
- * 랜덤 응답을 N회 생성해 캐릭터별 비율을 출력한다. 특정 캐릭터가 30% 이상이거나
+ *   node scripts/simulate-chuseok.ts [iterations] [weights.json]
+ * 랜덤 응답을 N회 생성해 캐릭터별 비율을 출력한다.
+ * weights.json 은 { "q1_a": 0.4, "q1_b": 0.1, ... } 형태의 보기별 선택 확률(상대값). 없는 보기는 1.
+ * 실제 운영 데이터(/api/admin/chuseok/stats 의 questions[].options[].count)를 넣으면 실제 분포를 재현할 수 있다. 특정 캐릭터가 30% 이상이거나
  * 거의 나오지 않으면 questions.json 의 tags 나 characters.json 의 requiredTraits 를 조정한다.
  */
 import { readFileSync } from 'node:fs';
@@ -22,6 +24,19 @@ const fallbackCharacterId = charactersJson.fallbackCharacterId as string;
 const content = { questions, characters, traits, fallbackCharacterId };
 
 const iterations = Number(process.argv[2]) || 50_000;
+const weights: Record<string, number> = process.argv[3]
+  ? JSON.parse(readFileSync(process.argv[3], 'utf8'))
+  : {};
+function pickWeighted(q: Question) {
+  const ws = q.options.map((o) => weights[o.id] ?? 1);
+  const total = ws.reduce((a, b) => a + b, 0);
+  let r = Math.random() * total;
+  for (let i = 0; i < q.options.length; i++) {
+    r -= ws[i];
+    if (r <= 0) return q.options[i];
+  }
+  return q.options[q.options.length - 1];
+}
 const counts = new Map<string, number>();
 let fallbacks = 0;
 
@@ -36,7 +51,7 @@ if (r1 !== r2) throw new Error('non-deterministic result!');
 for (let i = 0; i < iterations; i++) {
   const answers: AnswerMap = {};
   for (const q of questions) {
-    answers[q.id] = q.options[Math.floor(Math.random() * q.options.length)].id;
+    answers[q.id] = pickWeighted(q).id;
   }
   const result = evaluate(answers, content);
   counts.set(result.characterId, (counts.get(result.characterId) ?? 0) + 1);
@@ -47,7 +62,7 @@ const rows = characters
   .map((c) => ({ id: c.id, name: c.name, n: counts.get(c.id) ?? 0 }))
   .sort((a, b) => b.n - a.n);
 
-console.log(`\n질문 ${questions.length}개 · 캐릭터 ${characters.length}개 · 랜덤 응답 ${iterations.toLocaleString()}회\n`);
+console.log(`\n질문 ${questions.length}개 · 캐릭터 ${characters.length}개 · ${process.argv[3] ? '가중치' : '균등'} 랜덤 응답 ${iterations.toLocaleString()}회\n`);
 for (const row of rows) {
   const pct = (row.n / iterations) * 100;
   const bar = '█'.repeat(Math.round(pct / 2));
