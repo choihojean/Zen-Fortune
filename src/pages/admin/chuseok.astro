@@ -38,7 +38,7 @@ const characterCount = chuseokContent.characters.length;
       <span class="stat-sub" data-key="entries_rate_text">완료자 중 — %</span>
     </article>
     <article class="stat admin-card">
-      <span class="admin-cap">당첨</span>
+      <span class="admin-cap">당첨 (별도 추첨 도구)</span>
       <div class="stat-value" data-key="winners_total">—</div>
       <span class="stat-sub" data-key="excluded_text">수동 제외 —</span>
     </article>
@@ -60,26 +60,6 @@ const characterCount = chuseokContent.characters.length;
       <div id="charDist" class="rows"><div class="row-empty">불러오는 중…</div></div>
     </article>
 
-    <article class="admin-card draw-card is-dark">
-      <div class="card-head" style="border-bottom-color:#2a221a;">
-        <div>
-          <span class="admin-cap" style="color:#8a7454">Lucky Draw</span>
-          <h2 class="card-title" style="color:#f4ead9;">추첨 실행</h2>
-        </div>
-      </div>
-      <div class="draw-body">
-        <p class="draw-hint">한 줄에 <b>상품명, 인원</b>. 위에서부터 순서대로 추첨하고 앞 등급 당첨자는 뒤 등급에서 제외됩니다. 이미 당첨된 사람과 제외 처리된 사람은 풀에서 빠집니다.</p>
-        <textarea id="prizeInput" class="textarea draw-textarea" rows="4">황금 송편상, 1
-보름달상, 3
-복주머니상, 10</textarea>
-        <div class="draw-actions">
-          <button id="drawBtn" class="btn btn-primary draw-btn" type="button">추첨 실행</button>
-          <button id="resetDrawBtn" class="btn btn-danger" type="button">당첨 초기화</button>
-        </div>
-        <p id="drawError" class="draw-error" role="alert"></p>
-        <div id="drawResult" class="draw-result"></div>
-      </div>
-    </article>
   </section>
 
   <section class="admin-card list" style="margin-top:24px;">
@@ -134,20 +114,11 @@ const characterCount = chuseokContent.characters.length;
     .stat-sub { font-family: var(--font-ui-kr); font-size: 12px; color: #8a7454; }
     .stat.is-dark .stat-sub { color: #b8a688; }
 
-    .grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
     .card-head { padding: 22px 24px 14px; border-bottom: 1px solid #f3ecdc; display: flex; align-items: center; justify-content: space-between; }
     .card-title { margin: 4px 0 0; font-family: var(--font-display); font-weight: 500; font-size: 20px; color: #1a1612; letter-spacing: -0.01em; }
     .rows { display: flex; flex-direction: column; }
 
-    .draw-card { display: flex; flex-direction: column; }
-    .draw-body { padding: 18px 24px 22px; display: flex; flex-direction: column; gap: 12px; }
-    .draw-hint { margin: 0; font-family: var(--font-ui-kr); font-size: 12px; line-height: 19px; color: #b8a688; }
-    .draw-hint b { color: #f4ead9; font-weight: 600; }
-    .draw-textarea { background: #2a221a; border-color: #3a3028; color: #f4ead9; font-family: var(--font-ui); min-height: 96px; }
-    .draw-actions { display: flex; gap: 10px; align-items: center; }
-    .draw-btn { background: #f4ead9; color: #1a1612; }
-    .draw-error { margin: 0; min-height: 18px; font-family: var(--font-ui-kr); font-size: 12px; color: #e6a598; }
-    .draw-result { display: flex; flex-direction: column; gap: 6px; }
 
     .list { padding: 0; }
     .list-head { padding: 22px 24px 14px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid #f3ecdc; flex-wrap: wrap; }
@@ -354,59 +325,6 @@ const characterCount = chuseokContent.characters.length;
     document.getElementById('entrySearch')!.addEventListener('input', renderEntries);
     document.getElementById('winnersOnly')!.addEventListener('change', renderEntries);
     document.getElementById('refreshBtn')!.addEventListener('click', refreshAll);
-
-    function parsePrizes(text: string) {
-      return text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).map((l) => {
-        const [name, count] = l.split(/[,\t]/).map((s) => s.trim());
-        return { name, count: Number(count) };
-      });
-    }
-
-    document.getElementById('drawBtn')!.addEventListener('click', async () => {
-      const errEl = document.getElementById('drawError')!;
-      const out = document.getElementById('drawResult')!;
-      const btn = document.getElementById('drawBtn') as HTMLButtonElement;
-      errEl.textContent = '';
-      const prizes = parsePrizes((document.getElementById('prizeInput') as HTMLTextAreaElement).value);
-      const total = prizes.reduce((s, p) => s + (p.count || 0), 0);
-      if (!confirm(`총 ${total}명을 추첨합니다. 이미 당첨된 사람은 제외되고 결과는 즉시 저장됩니다. 진행할까요?`)) return;
-      btn.disabled = true;
-      try {
-        const res = await fetch('/api/admin/chuseok/draw', {
-          method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ prizes }),
-        });
-        const data = await res.json() as { error?: string; winners?: { employee_name: string; contact: string; character_name: string; prize: string }[]; poolSize?: number; shortfall?: number };
-        if (!res.ok) throw new Error(data.error || '추첨 실패');
-        out.innerHTML = `<p class="draw-hint">풀 ${data.poolSize}명 중 ${data.winners!.length}명 당첨${data.shortfall ? ` · 인원 부족 ${data.shortfall}명` : ''}</p>` +
-          data.winners!.map((w) => `<div class="win-row"><span class="prize">${esc(w.prize)}</span><span class="who">${esc(w.employee_name)}<small>${esc(w.contact)} · ${esc(w.character_name)}</small></span></div>`).join('');
-        await refreshAll();
-      } catch (err: any) {
-        errEl.textContent = err.message;
-      } finally {
-        btn.disabled = false;
-      }
-    });
-
-    document.getElementById('resetAllBtn')!.addEventListener('click', async () => {
-      const typed = prompt('테스트 결과와 럭키드로우 응모를 모두 삭제합니다. 되돌릴 수 없습니다.\n계속하려면 "초기화" 를 입력하세요.');
-      if (typed === null) return;
-      const res = await fetch('/api/admin/chuseok/reset', {
-        method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ confirm: typed.trim() }),
-      });
-      const data = await res.json().catch(() => ({})) as { error?: string; deleted?: { entries: number; sessions: number } };
-      if (!res.ok) { alert(data.error || '초기화에 실패했어요.'); return; }
-      alert(`삭제 완료 · 응모 ${data.deleted?.entries ?? 0}건, 테스트 ${data.deleted?.sessions ?? 0}건`);
-      document.getElementById('drawResult')!.innerHTML = '';
-      await refreshAll();
-    });
-
-    document.getElementById('resetDrawBtn')!.addEventListener('click', async () => {
-      if (!confirm('모든 당첨 결과를 초기화할까요? 되돌릴 수 없습니다.')) return;
-      const res = await fetch('/api/admin/chuseok/draw', { method: 'DELETE' });
-      if (!res.ok) alert('초기화에 실패했어요.');
-      document.getElementById('drawResult')!.innerHTML = '';
-      await refreshAll();
-    });
 
     refreshAll();
   </script>
