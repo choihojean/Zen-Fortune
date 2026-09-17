@@ -3,10 +3,11 @@ import { readEnv } from '@/lib/env';
 import { createServerClient } from '@/lib/supabase';
 import { assignPrizes, parsePrizeTiers } from '@/lib/chuseok/draw';
 import { getCharacter } from '@/lib/chuseok/content';
+import { formatPhone } from '@/lib/chuseok/validation';
 
 export const prerender = false;
 
-type PoolRow = { id: number; employee_name: string; employee_email: string; character_id: string };
+type PoolRow = { id: number; employee_name: string; employee_phone: string | null; employee_email: string | null; character_id: string };
 
 /**
  * POST /api/admin/chuseok/draw
@@ -31,7 +32,7 @@ export const POST: APIRoute = async (ctx) => {
 
     const { data: pool, error } = await sb
       .from('chuseok_entries')
-      .select('id, employee_name, employee_email, character_id')
+      .select('id, employee_name, employee_phone, employee_email, character_id')
       .eq('is_excluded', false)
       .eq('is_winner', false)
       .order('id', { ascending: true })
@@ -64,7 +65,7 @@ export const POST: APIRoute = async (ctx) => {
       winners: assignments.map((a) => ({
         id: a.winner.id,
         employee_name: a.winner.employee_name,
-        employee_email: a.winner.employee_email,
+        contact: a.winner.employee_phone ? formatPhone(a.winner.employee_phone) : (a.winner.employee_email ?? ''),
         character_id: a.winner.character_id,
         character_name: getCharacter(a.winner.character_id)?.name ?? a.winner.character_id,
         prize: a.prize,

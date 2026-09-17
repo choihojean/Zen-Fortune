@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { readEnv } from '@/lib/env';
 import { createServerClient } from '@/lib/supabase';
 import { getCharacter } from '@/lib/chuseok/content';
+import { formatPhone } from '@/lib/chuseok/validation';
 
 export const prerender = false;
 
@@ -9,7 +10,8 @@ export type EntryRow = {
   id: number;
   session_id: string;
   employee_name: string;
-  employee_email: string;
+  employee_phone: string | null;
+  employee_email: string | null;
   character_id: string;
   entered_at: string;
   is_winner: boolean;
@@ -47,15 +49,16 @@ export const GET: APIRoute = async (ctx) => {
 
     const entries = ((data ?? []) as EntryRow[]).map((e) => ({
       ...e,
+      phone_display: e.employee_phone ? formatPhone(e.employee_phone) : (e.employee_email ?? ''),
       character_name: getCharacter(e.character_id)?.name ?? e.character_id,
     }));
 
     const url = new URL(ctx.request.url);
     if (url.searchParams.get('format') === 'csv') {
-      const header = ['id', '이름', '이메일', '캐릭터', '캐릭터ID', '응모시각(KST)', '당첨', '상품', '추첨시각(KST)', '제외', '메모'];
+      const header = ['id', '이름', '연락처', '캐릭터', '캐릭터ID', '응모시각(KST)', '당첨', '상품', '추첨시각(KST)', '제외', '메모'];
       const lines = entries.map((e) =>
         [
-          e.id, e.employee_name, e.employee_email, e.character_name, e.character_id,
+          e.id, e.employee_name, e.phone_display, e.character_name, e.character_id,
           fmtKST(e.entered_at), e.is_winner ? 'Y' : '', e.prize ?? '', fmtKST(e.drawn_at),
           e.is_excluded ? 'Y' : '', e.note ?? '',
         ].map(csvCell).join(',')

@@ -1,18 +1,18 @@
 import type { APIRoute } from 'astro';
 import { readEnv } from '@/lib/env';
 import { createServerClient } from '@/lib/supabase';
-import { isUuid, normalizeEmail, normalizeName } from '@/lib/chuseok/validation';
+import { isUuid, normalizeName, normalizePhone } from '@/lib/chuseok/validation';
 import { getEventStatus } from '@/lib/chuseok/event';
 
 export const prerender = false;
 
 /**
  * POST /api/chuseok/enter
- * body: { sessionId: uuid, employeeName: string, employeeEmail: string }
- * 테스트 완료 세션만 응모 가능. 이메일·세션 각각 unique → 서버에서 중복을 최종 차단한다.
+ * body: { sessionId: uuid, employeeName: string, employeePhone: string }
+ * 테스트 완료 세션만 응모 가능. 휴대폰 번호·세션 각각 unique → 서버에서 중복을 최종 차단한다.
  */
 export const POST: APIRoute = async (ctx) => {
-  let body: { sessionId?: unknown; employeeName?: unknown; employeeEmail?: unknown } = {};
+  let body: { sessionId?: unknown; employeeName?: unknown; employeePhone?: unknown } = {};
   try {
     body = (await ctx.request.json()) as typeof body;
   } catch {
@@ -23,9 +23,9 @@ export const POST: APIRoute = async (ctx) => {
     return Response.json({ code: 'INVALID_SESSION', error: '세션 정보가 올바르지 않습니다.' }, { status: 400 });
   }
   const name = normalizeName(body.employeeName);
-  const email = normalizeEmail(body.employeeEmail);
+  const phone = normalizePhone(body.employeePhone);
   if (!name) return Response.json({ code: 'INVALID_NAME', error: '이름을 확인해 주세요.' }, { status: 400 });
-  if (!email) return Response.json({ code: 'INVALID_EMAIL', error: '이메일 형식을 확인해 주세요.' }, { status: 400 });
+  if (!phone) return Response.json({ code: 'INVALID_PHONE', error: '휴대폰 번호를 확인해 주세요. (예: 010-1234-5678)' }, { status: 400 });
 
   let env: Env;
   try {
@@ -67,7 +67,7 @@ export const POST: APIRoute = async (ctx) => {
     const { error } = await sb.from('chuseok_entries').insert({
       session_id: session.id,
       employee_name: name,
-      employee_email: email,
+      employee_phone: phone,
       character_id: session.character_id,
     });
 

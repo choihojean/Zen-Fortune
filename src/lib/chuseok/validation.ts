@@ -18,6 +18,28 @@ export function normalizeEmail(value: unknown): string | null {
   return email;
 }
 
+// 휴대폰 번호: 숫자만 남겨 010XXXXXXXX (10~11자리) 만 허용. 하이픈·공백·+82 표기는 정규화한다.
+export function normalizePhone(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  let digits = value.replace(CONTROL_RE, '').replace(/\D/g, '');
+  if (digits.startsWith('82')) digits = '0' + digits.slice(2);
+  if (!/^01[016789]\d{7,8}$/.test(digits)) return null;
+  return digits;
+}
+
+/** 표시용 하이픈 포맷: 01012345678 → 010-1234-5678 */
+export function formatPhone(digits: string): string {
+  if (digits.length === 11) return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+  if (digits.length === 10) return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+  return digits;
+}
+
+/** 관리자 외 노출용 마스킹: 010-1234-5678 → 010-****-5678 */
+export function maskPhone(digits: string): string {
+  const f = formatPhone(digits);
+  return f.replace(/-(\d{3,4})-/, (m, mid) => `-${'*'.repeat(mid.length)}-`);
+}
+
 export function normalizeName(value: unknown): string | null {
   if (typeof value !== 'string') return null;
   const name = value.replace(CONTROL_RE, '').replace(/\s+/g, ' ').trim();

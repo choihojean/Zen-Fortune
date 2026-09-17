@@ -13,12 +13,13 @@ create table if not exists chuseok_sessions (
   user_agent       text
 );
 
--- 럭키드로우 응모. 이메일 1인 1응모 — 서버에서 lower/trim 후 저장하고 unique 로 강제.
+-- 럭키드로우 응모. 휴대폰 번호 1인 1응모 — 서버에서 숫자만 남겨 저장하고 unique 로 강제.
 create table if not exists chuseok_entries (
   id              bigserial primary key,
   session_id      uuid        not null references chuseok_sessions(id) on delete restrict,
   employee_name   text        not null,
-  employee_email  text        not null,
+  employee_phone  text        not null,          -- 숫자만 (예: 01012345678)
+  employee_email  text,                          -- (구) 이메일 방식 잔재, 사용 안 함
   character_id    text        not null,          -- 응모 시점의 결과 (재테스트해도 유지)
   entered_at      timestamptz not null default now(),
   is_winner       boolean     not null default false,
@@ -28,7 +29,7 @@ create table if not exists chuseok_entries (
   note            text
 );
 
-create unique index if not exists chuseok_entries_email_uidx   on chuseok_entries (employee_email);
+create unique index if not exists chuseok_entries_phone_uidx   on chuseok_entries (employee_phone);
 create unique index if not exists chuseok_entries_session_uidx on chuseok_entries (session_id);
 create index        if not exists chuseok_entries_winner_idx   on chuseok_entries (is_winner) where is_winner;
 create index        if not exists chuseok_sessions_char_idx    on chuseok_sessions (character_id);

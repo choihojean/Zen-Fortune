@@ -24,7 +24,7 @@ src/
 │   │   └── quotes.astro · drinks.astro
 │   └── api/
 │       ├── chuseok/complete.ts     ← POST 답변 제출 → 캐릭터 계산·세션 저장
-│       ├── chuseok/enter.ts        ← POST 럭키드로우 응모 (이메일·세션 unique)
+│       ├── chuseok/enter.ts        ← POST 럭키드로우 응모 (휴대폰 번호·세션 unique)
 │       ├── admin/chuseok/{stats,entries,entries/[id],draw}.ts
 │       ├── fortune.ts · like.ts
 │       └── admin/{login,logout,stats,quotes*,drinks*}.ts
@@ -77,8 +77,8 @@ npm run simulate:chuseok
 ### 정책
 
 - 테스트는 여러 번 가능. 결과 URL 은 `/chuseok/result/<sessionId>`.
-- 럭키드로우는 **이메일 1인 1응모 + 세션 1응모** (DB unique). 응모 데이터에는 최초 응모 시점의 캐릭터가 남는다.
-- 이메일은 형식만 검증하고 도메인 제한은 없다 (사외 메일을 쓰는 직원 참여 허용).
+- 럭키드로우는 **휴대폰 번호 1인 1응모 + 세션 1응모** (DB unique). 번호는 숫자만 저장(01012345678). 응모 데이터에는 최초 응모 시점의 캐릭터가 남는다.
+- 기존 DB 는 `supabase/chuseok_phone_migration.sql` 로 이메일 → 번호 전환.
 - 추첨은 `/admin/chuseok` 에서 상품 등급별로 실행. `crypto.getRandomValues` 비복원 추출. 이미 당첨된 사람·수동 제외자는 풀에서 빠진다.
 
 ## 로컬 개발
@@ -176,7 +176,7 @@ Cloudflare Pages → Connect to Git → Build command `pnpm build`, Output `dist
 | `quote_stats` | view (총/7일 노출·좋아요) |
 | `drink_usage` | view (총/7일 매칭) |
 | `chuseok_sessions` | 한가위 테스트 완료 세션 (답변·점수·캐릭터) |
-| `chuseok_entries` | 럭키드로우 응모 (이메일·세션 unique, 당첨·제외 상태) |
+| `chuseok_entries` | 럭키드로우 응모 (휴대폰 번호·세션 unique, 당첨·제외 상태) |
 
 조회/좋아요 카운터는 별도 테이블 없이 위 두 view에서 집계합니다. 새 분석 차원이 필요해지면 view를 늘리는 방향으로 확장.
 

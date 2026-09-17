@@ -89,7 +89,7 @@ const characterCount = chuseokContent.characters.length;
         <h2 class="list-title">응모자 목록</h2>
       </div>
       <div class="list-tools">
-        <input id="entrySearch" class="input" type="search" placeholder="이름·이메일·캐릭터 검색" />
+        <input id="entrySearch" class="input" type="search" placeholder="이름·연락처·캐릭터 검색" />
         <label class="checkbox"><input type="checkbox" id="winnersOnly" /> <span>당첨자만</span></label>
         <span class="list-count" id="entryCount">—</span>
       </div>
@@ -98,7 +98,7 @@ const characterCount = chuseokContent.characters.length;
       <table class="etable">
         <thead>
           <tr>
-            <th>#</th><th>이름</th><th>이메일</th><th>캐릭터</th><th>응모 시각</th><th>상태</th><th></th>
+            <th>#</th><th>이름</th><th>연락처</th><th>캐릭터</th><th>응모 시각</th><th>상태</th><th></th>
           </tr>
         </thead>
         <tbody id="entryRows">
@@ -218,7 +218,7 @@ const characterCount = chuseokContent.characters.length;
       questions: { id: string; text: string; total: number; options: { id: string; text: string; count: number }[] }[];
     };
     type Entry = {
-      id: number; employee_name: string; employee_email: string; character_id: string; character_name: string;
+      id: number; employee_name: string; phone_display: string; character_id: string; character_name: string;
       entered_at: string; is_winner: boolean; prize: string | null; drawn_at: string | null; is_excluded: boolean; note: string | null;
     };
 
@@ -289,7 +289,7 @@ const characterCount = chuseokContent.characters.length;
       const list = entries.filter((e) => {
         if (winnersOnly && !e.is_winner) return false;
         if (!q) return true;
-        return [e.employee_name, e.employee_email, e.character_name, e.prize ?? ''].some((v) => v.toLowerCase().includes(q));
+        return [e.employee_name, e.phone_display, e.character_name, e.prize ?? ''].some((v) => (v ?? '').toLowerCase().includes(q));
       });
       document.getElementById('entryCount')!.textContent = `${list.length} / ${entries.length}명`;
       const tbody = document.getElementById('entryRows')!;
@@ -305,7 +305,7 @@ const characterCount = chuseokContent.characters.length;
           <tr data-id="${e.id}" class="${e.is_excluded ? 'is-excluded' : ''}">
             <td>${e.id}</td>
             <td>${esc(e.employee_name)}</td>
-            <td class="email">${esc(e.employee_email)}</td>
+            <td class="email">${esc(e.phone_display)}</td>
             <td>${esc(e.character_name)}</td>
             <td>${fmt(e.entered_at)}</td>
             <td class="status">${status}</td>
@@ -344,7 +344,7 @@ const characterCount = chuseokContent.characters.length;
         await refreshAll();
       }
       if (btn.dataset.action === 'delete') {
-        if (!confirm(`${entry.employee_name} (${entry.employee_email}) 응모를 삭제할까요?\n삭제하면 같은 이메일로 다시 응모할 수 있게 됩니다.`)) return;
+        if (!confirm(`${entry.employee_name} (${entry.phone_display}) 응모를 삭제할까요?\n삭제하면 같은 번호로 다시 응모할 수 있게 됩니다.`)) return;
         const res = await fetch(`/api/admin/chuseok/entries/${id}`, { method: 'DELETE' });
         if (!res.ok) alert('삭제에 실패했어요.');
         await refreshAll();
@@ -375,10 +375,10 @@ const characterCount = chuseokContent.characters.length;
         const res = await fetch('/api/admin/chuseok/draw', {
           method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ prizes }),
         });
-        const data = await res.json() as { error?: string; winners?: { employee_name: string; employee_email: string; character_name: string; prize: string }[]; poolSize?: number; shortfall?: number };
+        const data = await res.json() as { error?: string; winners?: { employee_name: string; contact: string; character_name: string; prize: string }[]; poolSize?: number; shortfall?: number };
         if (!res.ok) throw new Error(data.error || '추첨 실패');
         out.innerHTML = `<p class="draw-hint">풀 ${data.poolSize}명 중 ${data.winners!.length}명 당첨${data.shortfall ? ` · 인원 부족 ${data.shortfall}명` : ''}</p>` +
-          data.winners!.map((w) => `<div class="win-row"><span class="prize">${esc(w.prize)}</span><span class="who">${esc(w.employee_name)}<small>${esc(w.employee_email)} · ${esc(w.character_name)}</small></span></div>`).join('');
+          data.winners!.map((w) => `<div class="win-row"><span class="prize">${esc(w.prize)}</span><span class="who">${esc(w.employee_name)}<small>${esc(w.contact)} · ${esc(w.character_name)}</small></span></div>`).join('');
         await refreshAll();
       } catch (err: any) {
         errEl.textContent = err.message;

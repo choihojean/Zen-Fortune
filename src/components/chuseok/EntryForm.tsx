@@ -21,6 +21,14 @@ interface EnterResponse {
 
 type Status = 'idle' | 'busy' | 'done' | 'duplicate';
 
+/** 입력 중 자동 하이픈: 숫자만 남기고 010-1234-5678 형태로 */
+function formatPhoneInput(raw: string): string {
+  const d = raw.replace(/\D/g, '').slice(0, 11);
+  if (d.length <= 3) return d;
+  if (d.length <= 7) return `${d.slice(0, 3)}-${d.slice(3)}`;
+  return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
+}
+
 function StateCard({
   tone,
   icon,
@@ -62,7 +70,7 @@ export default function EntryForm({
   drawClosesAtLabel,
 }: Props) {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [agree, setAgree] = useState(false);
   const [status, setStatus] = useState<Status>(alreadyEntered ? 'done' : 'idle');
   const [error, setError] = useState('');
@@ -113,9 +121,9 @@ export default function EntryForm({
     e.preventDefault();
     setError('');
     const n = name.trim();
-    const m = email.trim();
+    const digits = phone.replace(/\D/g, '');
     if (!n) return setError('이름을 입력해 주세요.');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(m)) return setError('이메일 형식을 확인해 주세요.');
+    if (!/^01[016789]\d{7,8}$/.test(digits)) return setError('휴대폰 번호를 확인해 주세요. (예: 010-1234-5678)');
     if (!agree) return setError('안내 사항에 동의해 주세요.');
 
     setStatus('busy');
@@ -123,7 +131,7 @@ export default function EntryForm({
       const res = await fetch('/api/chuseok/enter', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ sessionId, employeeName: n, employeeEmail: m }),
+        body: JSON.stringify({ sessionId, employeeName: n, employeePhone: digits }),
       });
       const data = (await res.json().catch(() => ({}))) as EnterResponse;
       if (res.ok && data.success) {
@@ -147,7 +155,7 @@ export default function EntryForm({
         <p className="ch-draw-cap">Lucky Draw</p>
         <h2 className="ch-draw-title">복주머니에 이름 넣기</h2>
         <p className="ch-draw-text">
-          이름과 이메일만 남기면 응모 완료. 한 사람당 한 번이에요.
+          이름과 휴대폰 번호만 남기면 응모 완료. 한 사람당 한 번이에요.
           {drawClosesAtLabel ? ` ${drawClosesAtLabel} 마감.` : ''}
         </p>
       </div>
@@ -169,24 +177,24 @@ export default function EntryForm({
         </label>
 
         <label className="ch-field">
-          <span className="ch-field-label">이메일</span>
+          <span className="ch-field-label">휴대폰 번호</span>
           <input
             className="ch-input"
-            type="email"
-            name="email"
-            autoComplete="email"
-            inputMode="email"
-            maxLength={120}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="hong@example.com"
+            type="tel"
+            name="phone"
+            autoComplete="tel-national"
+            inputMode="numeric"
+            maxLength={13}
+            value={phone}
+            onChange={(e) => setPhone(formatPhoneInput(e.target.value))}
+            placeholder="010-1234-5678"
             required
           />
         </label>
 
         <label className="ch-check">
           <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} />
-          <span>참여 확인과 추첨·당첨자 발표에만 쓰고, 이벤트가 끝나면 지워요.</span>
+          <span>이름과 번호는 참여 확인, 추첨, 당첨자 연락에만 쓰고 이벤트가 끝나면 지워요.</span>
         </label>
 
         <p className="ch-error" role="alert" aria-live="polite">{error}</p>
